@@ -125,6 +125,7 @@ a {
 
 #qualifications-list {
   list-style: none;
+  padding-left: 1em;
 }
 
 #wrapper-techstack__items {
