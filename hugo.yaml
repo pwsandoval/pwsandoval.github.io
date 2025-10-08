@@ -1,0 +1,28 @@
+baseURL: https://pw0.dev/
+languageCode: en-us
+title: pw0
+theme: ["PaperMod"]
+params:
+  profileMode:
+    enabled: true
+    title: "Data Engineer"
+    subtitle: "Hi, I'm Peter 👋 **Passionate about data.**
+      I write about my journey with data — lessons learned,
+      useful resources, and things I wish I knew earlier."
+    imageUrl: "avatar.png"
+    imageWidth: 200
+    imageHeight: 200
+    imageTitle: my avatar
+    buttons:
+      - name: Posts
+        url: /posts/
+      - name: Tags
+        url: /tags/
+      - name: Archives
+        url: /archives/
+
+  socialIcons:
+    - name: linkedin
+      url: "https://www.linkedin.com/in/pwsandoval"
+    - name: github
+      url: "https://github.com/pwsandoval"
