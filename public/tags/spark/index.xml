@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Spark on pw0</title>
+    <link>http://localhost:1313/tags/spark/</link>
+    <description>Recent content in Spark on pw0</description>
+    <generator>Hugo -- 0.151.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 06 Oct 2025 23:05:18 -0500</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/spark/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>00_env_check</title>
+      <link>http://localhost:1313/posts/00_env_check/</link>
+      <pubDate>Mon, 06 Oct 2025 23:05:18 -0500</pubDate>
+      <guid>http://localhost:1313/posts/00_env_check/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>
