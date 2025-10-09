@@ -111,14 +111,17 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">Basic environment check (Jupyter &#43; Spark, local)
+    <h2 class="entry-hint-parent">🛠️ Basic Environment Check (Jupyter &#43; Spark Local)
     </h2>
   </header>
   <div class="entry-content">
-    <p></p>
+    <p>Quick steps Start a local Spark session Print the Spark version Run a simple row count Write &amp; read a small Parquet dataset under ./data Tip: Keep this notebook as your first-run check for any lab session
+1) Paths and data folder We resolve path for data/ folder, all files written here persist on your host
+from pathlib import Path base_dir = Path.cwd().parent data_dir = base_dir / &#34;data&#34; / &#34;00_env_check&#34; print(&#34;Project base folder:&#34;, base_dir) print(&#34;Project data folder:&#34;, data_dir) Project base folder: /home/jovyan/workProject data folder: /home/jovyan/work/data/00_env_check2) Spark session and version Creates a local Spark session, the Spark UI should use port 4040
+...</p>
   </div>
   <footer class="entry-footer"><span title='2025-10-06 23:05:18 -0500 -05'>October 6, 2025</span></footer>
-  <a class="entry-link" aria-label="post link to Basic environment check (Jupyter &#43; Spark, local)" href="http://localhost:1313/posts/00_env_check/"></a>
+  <a class="entry-link" aria-label="post link to 🛠️ Basic Environment Check (Jupyter &#43; Spark Local)" href="http://localhost:1313/posts/00_env_check/"></a>
 </article>
     </main>
     

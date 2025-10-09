@@ -26,3 +26,6 @@ params:
       url: "https://www.linkedin.com/in/pwsandoval"
     - name: github
       url: "https://github.com/pwsandoval"
+caches:
+  images:
+    dir: :cacheDir/images
