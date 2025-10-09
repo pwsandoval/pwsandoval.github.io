@@ -42,7 +42,9 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
       - name: Setup Theme
-        run: git submodule update --init --recursive
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --recursive
       - name: Create directory for user-specific executable files
         run: |
           mkdir -p "${HOME}/.local"
