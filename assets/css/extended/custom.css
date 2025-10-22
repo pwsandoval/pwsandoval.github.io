@@ -37,10 +37,10 @@
 }
 
 /* Hover: slightly highlight */
-.tool-row:hover {
+/* .tool-row:hover {
   border-color: var(--primary);
   background: var(--entry);
-}
+} */
 
 /* En dark mode: restaurar color en hover */
 body.dark .tool-row:hover .tool-logo[src*="kafka"] {
