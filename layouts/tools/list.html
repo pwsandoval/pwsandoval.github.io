@@ -1,0 +1,25 @@
+{{ define "main" }}
+<main class="container">
+  <header class="header">
+    <h1 class="page-title">{{ .Title }}</h1>
+  </header>
+
+  <section class="tools-grid-2col">
+    {{ range .Pages.ByTitle }}
+    <a class="tool-row" href="{{ .RelPermalink }}">
+      <div class="tool-logo-box">
+        <img class="tool-logo" src="/icons/{{ .Param "icon" }}" alt="{{ .Title
+        }}">
+      </div>
+
+      <div class="tool-info">
+        <h2 class="tool-title">{{ .Title }}</h2>
+        <p class="tool-summary">{{ .Param "summary" }}</p>
+      </div>
+    </a>
+    {{ else }}
+    <p>No tools added yet.</p>
+    {{ end }}
+  </section>
+</main>
+{{ end }}

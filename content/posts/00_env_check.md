@@ -5,6 +5,12 @@ draft: false
 description: ""
 tags: [spark, jupyter, basic]
 categories: ["blog"]
+cover:
+  image: "/images/posts/env_check.png" # coloca la imagen en static/images/posts/...
+  alt: "Miniatura de mi post"
+  caption: "Foto por …"
+  relative: false   # usa la ruta desde /static
+  hidden: false     # visible en listado y en el post
 ---
 
 ### Quick steps
@@ -34,11 +40,9 @@ print("Project data folder:", data_dir)
     Project base folder: /home/jovyan/work
     Project data folder: /home/jovyan/work/data/00_env_check
 
-
 ## 2) Spark session and version
 
 Creates a local Spark session, the Spark UI should use port **4040**
-
 
 ```python
 from pyspark.sql import SparkSession
@@ -52,14 +56,12 @@ spark = (
 
 spark
 ```
+
 <div>
     <p><b>SparkSession - in-memory</b></p>
-
     <div>
         <p><b>SparkContext</b></p>
-
         <p><a href="http://5bebdeb0c884:4041">Spark UI</a></p>
-
         <dl>
         <dt>Version</dt>
             <dd><code>v4.0.1</code></dd>
@@ -69,11 +71,7 @@ spark
             <dd><code>pw0 - env check</code></dd>
         </dl>
     </div>
-
 </div>
-
-
-
 
 > Open http://localhost:4040 to confirm the Spark UI loads (header and app name)
 
@@ -81,12 +79,11 @@ spark
 
 Perform a basic count with the timing to perform the operation
 
-
 ```python
 import time
 
 start = time.perf_counter()
-df1 = spark.range(0, 1_000_000)
+f1 = spark.range(0, 1_000_000)
 total = df1.count()
 elapsed = time.perf_counter() - start
 
@@ -193,10 +190,6 @@ spark = (
 
 spark
 ```
-
-
-
-
 
     <div>
         <p><b>SparkSession - in-memory</b></p>

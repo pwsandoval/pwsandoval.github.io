@@ -29,3 +29,17 @@ params:
 caches:
   images:
     dir: :cacheDir/images
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+menu:
+  main:
+    - identifier: posts
+      name: posts
+      url: /posts/
+      weight: 1
+    - identifier: tools
+      name: "tools"
+      url: "/tools/"
+      weight: 2
