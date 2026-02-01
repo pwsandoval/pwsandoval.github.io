@@ -28,18 +28,24 @@ This is the default path for all posts in this blog.
 - Capture Spark UI screenshots for before/after evidence.
 
 **Workflow**
-1. Start the stack with `docker compose up`.
-2. Open Jupyter from the container.
+1. From `content/tools/apache-spark/docker/`, run `docker compose up`.
+2. Open Jupyter (if you use it) or run Spark jobs from the container.
 3. Run the notebook or snippets from the posts.
 4. Capture Spark UI screenshots locally.
 
 **Data paths**
-- Keep datasets under `data/`.
-- Mount `data/` into the container so Spark reads consistent paths.
+- Keep datasets under `content/tools/apache-spark/docker/workspace/data/`.
+- Inside the container, read them from `/home/jovyan/work/data/` (or map a simpler alias if you prefer).
 
 **Notebook exports**
 - Export to `.ipynb` for interactive use.
 - Export to `.py` for code review and clean diffs.
+
+**Ports**
+- Spark Master UI: `http://localhost:8080`
+- Worker UI: `http://localhost:8081` and `http://localhost:8082`
+- Spark History: `http://localhost:18080`
+- Jupyter: `http://localhost:8888`
 
 ## What to measure (for optimization posts)
 - Total job time.
