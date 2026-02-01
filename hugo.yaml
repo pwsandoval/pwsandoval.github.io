@@ -43,3 +43,7 @@ menu:
       name: "tools"
       url: "/tools/"
       weight: 2
+taxonomies:
+  tag: tags
+  category: categories
+  series: series

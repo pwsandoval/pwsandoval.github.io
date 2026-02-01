@@ -1,0 +1,12 @@
+{{- $ipynb := .Page.Params.notebook_ipynb -}}
+{{- $py := .Page.Params.notebook_py -}}
+{{- if or $ipynb $py -}}
+  <div class="notebook-buttons">
+    {{- if $ipynb -}}
+      <a class="btn notebook-btn" href="{{ $ipynb }}">Download .ipynb</a>
+    {{- end -}}
+    {{- if $py -}}
+      <a class="btn notebook-btn" href="{{ $py }}">Download .py</a>
+    {{- end -}}
+  </div>
+{{- end -}}

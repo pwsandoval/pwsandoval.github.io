@@ -9,7 +9,9 @@ series: ["Kafka 101"]
 series_index: 2
 ---
 
-Series: **Kafka 101 (2/3)**
+{{< series_nav >}}
+
+{{< notebook_buttons >}}
 
 This post shows how consumer groups distribute work and how offsets move. It is the mental model you need before streaming with Spark.
 

@@ -15,7 +15,9 @@ cover:
   hidden: false
 ---
 
-Series: **Spark & Delta 101 (1/5)**
+{{< series_nav >}}
+
+{{< notebook_buttons >}}
 
 If you are new to Delta Lake, this is the first post to run. It focuses on the minimal actions you do in real work: create a Delta table, read it back, and overwrite it safely.
 

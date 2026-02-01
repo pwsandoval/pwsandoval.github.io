@@ -1,0 +1,35 @@
+.series-nav {
+  margin: 1.2rem 0 0.8rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(120, 120, 120, 0.3);
+  border-radius: 10px;
+  background: rgba(120, 120, 120, 0.06);
+}
+
+.series-list {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.series-list a {
+  text-decoration: none;
+}
+
+.notebook-buttons {
+  margin: 0.6rem 0 1.2rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.notebook-btn {
+  display: inline-block;
+  padding: 0.45rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid rgba(120, 120, 120, 0.35);
+  background: rgba(120, 120, 120, 0.08);
+  text-decoration: none;
+  font-size: 0.95rem;
+}

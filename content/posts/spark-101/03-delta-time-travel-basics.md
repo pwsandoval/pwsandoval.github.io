@@ -15,7 +15,9 @@ cover:
   hidden: false
 ---
 
-Series: **Spark & Delta 101 (3/5)**
+{{< series_nav >}}
+
+{{< notebook_buttons >}}
 
 Time travel is one of the most useful Delta features. It lets you query older versions of your table without backups. This post shows a simple before/after so you can trust it in real work.
 

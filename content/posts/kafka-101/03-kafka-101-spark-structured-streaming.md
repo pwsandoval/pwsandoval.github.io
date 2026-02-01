@@ -9,7 +9,9 @@ series: ["Kafka 101"]
 series_index: 3
 ---
 
-Series: **Kafka 101 (3/3)**
+{{< series_nav >}}
+
+{{< notebook_buttons >}}
 
 This post connects Spark Structured Streaming to a local Kafka topic and reads messages in real time.
 

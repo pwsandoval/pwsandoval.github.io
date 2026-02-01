@@ -9,7 +9,9 @@ series: ["Spark & Delta 101"]
 series_index: 5
 ---
 
-Series: **Spark & Delta 101 (5/5)**
+{{< series_nav >}}
+
+{{< notebook_buttons >}}
 
 Partitions are the unit of parallelism in Spark. This post shows how partition count changes task distribution and why it affects performance.
 

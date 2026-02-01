@@ -9,7 +9,9 @@ series: ["Kafka 101"]
 series_index: 1
 ---
 
-Series: **Kafka 101 (1/3)**
+{{< series_nav >}}
+
+{{< notebook_buttons >}}
 
 This post gets you running locally and proves Kafka works with the minimal CLI loop: create a topic, produce messages, and consume them.
 

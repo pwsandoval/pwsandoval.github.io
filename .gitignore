@@ -5,3 +5,4 @@ hugo_stats.json
 .frontmatter
 .vscode/
 NOTES.md
+content/tools/*/docker/

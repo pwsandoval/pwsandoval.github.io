@@ -15,7 +15,9 @@ cover:
   hidden: false
 ---
 
-Series: **Spark & Delta 101 (2/5)**
+{{< series_nav >}}
+
+{{< notebook_buttons >}}
 
 If you are new to Spark, learn these three operations first: select, filter, and write. This post is a short, practical tour with a small dataset you can run anywhere.
 

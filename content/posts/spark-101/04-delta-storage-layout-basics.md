@@ -9,7 +9,9 @@ series: ["Spark & Delta 101"]
 series_index: 4
 ---
 
-Series: **Spark & Delta 101 (4/5)**
+{{< series_nav >}}
+
+{{< notebook_buttons >}}
 
 Delta tables are just Parquet files plus a transaction log. This post helps you see the folder structure and build intuition about what Delta actually writes to disk.
 
