@@ -6,20 +6,22 @@
   {{- $sorted := sort $pages "Params.series_index" "asc" -}}
   {{- $current := .Page.RelPermalink -}}
   <div class="series-nav">
-    <strong>Series:</strong>
-    {{- with site.GetPage (printf "/series/%s" $term) -}}
-      <a href="{{ .RelPermalink }}">{{ $series }}</a>
-    {{- else -}}
-      <span>{{ $series }}</span>
-    {{- end -}}
+    <div class="series-header">
+      <span class="series-label">Series</span>
+      {{- with site.GetPage (printf "/series/%s" $term) -}}
+        <a class="series-title" href="{{ .RelPermalink }}">{{ $series }}</a>
+      {{- else -}}
+        <span class="series-title">{{ $series }}</span>
+      {{- end -}}
+    </div>
     {{- if $sorted -}}
       <div class="series-list">
         {{- range $i, $p := $sorted -}}
           {{- $index := $p.Params.series_index | default (add $i 1) -}}
           {{- if eq $p.RelPermalink $current -}}
-            <span><strong>{{ $index }}/{{ len $sorted }}. {{ $p.Title }}</strong></span>
+            <span class="series-item current"><strong>{{ $index }}/{{ len $sorted }}. {{ $p.Title }}</strong></span>
           {{- else -}}
-            <a href="{{ $p.RelPermalink }}">{{ $index }}/{{ len $sorted }}. {{ $p.Title }}</a>
+            <a class="series-item" href="{{ $p.RelPermalink }}">{{ $index }}/{{ len $sorted }}. {{ $p.Title }}</a>
           {{- end -}}
         {{- end -}}
       </div>

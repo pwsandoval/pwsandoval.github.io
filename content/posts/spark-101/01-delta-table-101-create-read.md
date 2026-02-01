@@ -7,6 +7,8 @@ reading_time: "9 min"
 slug: "delta-table-101-create-read"
 series: ["Spark & Delta 101"]
 series_index: 1
+notebook_ipynb: "/notebooks/spark-101/01-delta-table-101.ipynb"
+notebook_py: "/notebooks/spark-101/01-delta-table-101.py"
 cover:
   image: "/images/posts/cover-delta-table-101.svg"
   alt: "Cover: Delta Table 101"

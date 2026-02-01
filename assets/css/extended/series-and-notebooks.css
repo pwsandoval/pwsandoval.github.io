@@ -1,35 +1,67 @@
 .series-nav {
-  margin: 1.2rem 0 0.8rem;
-  padding: 0.8rem 1rem;
-  border: 1px solid rgba(120, 120, 120, 0.3);
-  border-radius: 10px;
-  background: rgba(120, 120, 120, 0.06);
+  margin: 1rem 0 0.8rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(120, 120, 120, 0.25);
+  border-radius: 12px;
+  background: rgba(120, 120, 120, 0.05);
+  display: inline-block;
+  max-width: 100%;
 }
 
-.series-list {
-  margin-top: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+.series-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
 }
 
-.series-list a {
+.series-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+.series-title {
+  font-weight: 600;
   text-decoration: none;
 }
 
+.series-list {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.series-item {
+  text-decoration: none;
+}
+
+.series-item.current {
+  color: var(--primary);
+}
+
 .notebook-buttons {
-  margin: 0.6rem 0 1.2rem;
+  margin: 0.5rem 0 1.2rem;
   display: flex;
   gap: 0.6rem;
   flex-wrap: wrap;
 }
 
 .notebook-btn {
-  display: inline-block;
-  padding: 0.45rem 0.8rem;
-  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
   border: 1px solid rgba(120, 120, 120, 0.35);
   background: rgba(120, 120, 120, 0.08);
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
+  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.notebook-btn:hover {
+  background: rgba(255, 183, 3, 0.12);
+  border-color: rgba(255, 183, 3, 0.5);
+  transform: translateY(-1px);
 }
