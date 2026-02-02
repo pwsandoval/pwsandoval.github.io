@@ -1,5 +1,7 @@
 ---
 title: "Delta storage layout: qué hay realmente en disco"
+summary: "Qué archivos se crean en Delta (Parquet + _delta_log) y cómo inspeccionarlos."
+description: "Explora el layout en disco, commits y checkpoints, y entiende por qué esto importa para performance, mantenimiento y troubleshooting en producción."
 date: 2026-02-01
 tags: ["delta", "spark", "infra", "testing", "certificacion"]
 difficulty: "basico"

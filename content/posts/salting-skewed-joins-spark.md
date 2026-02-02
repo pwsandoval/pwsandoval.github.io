@@ -1,5 +1,7 @@
 ---
 title: "Arregla joins con skew en Spark usando salting"
+summary: "Caso reproducible de skew y solución con salting, con métricas antes/después y un ejemplo real."
+description: "Detecta joins con skew en Spark y aplica salting para repartir las llaves “hot”. Verás el antes/después con tiempos de stage y shuffle, una repro sintética y un dataset real con descargas al final."
 date: 2026-02-01
 tags: ["spark", "databricks", "optimizacion", "testing", "infra"]
 difficulty: "intermedio"

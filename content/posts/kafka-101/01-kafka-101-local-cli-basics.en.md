@@ -1,5 +1,7 @@
 ---
 title: "Kafka 101: your first local topic"
+summary: "Create a local topic, produce and consume messages, and understand the basic flow."
+description: "Kafka CLI first steps: create topics, produce events, and consume them from console in a reproducible local environment. Perfect for practice without cloud dependencies."
 date: 2026-02-01
 tags: ["kafka", "infra", "streaming", "testing", "certificacion"]
 difficulty: "basico"

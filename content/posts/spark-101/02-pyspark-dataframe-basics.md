@@ -1,5 +1,7 @@
 ---
 title: "PySpark DataFrames: las tres operaciones diarias"
+summary: "Select, filter y agregaciones: las tres operaciones diarias en PySpark."
+description: "Guía práctica con ejemplos claros y salidas esperadas para dominar transformaciones básicas en DataFrames. Incluye patrones de chaining legibles y validaciones rápidas."
 date: 2026-02-01
 tags: ["spark", "databricks", "infra", "testing", "certificacion"]
 difficulty: "basico"

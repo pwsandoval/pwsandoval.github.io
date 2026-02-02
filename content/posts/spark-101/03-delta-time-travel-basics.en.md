@@ -1,5 +1,7 @@
 ---
 title: "Delta Time Travel: query the past with confidence"
+summary: "Query previous versions with Time Travel and recover data safely."
+description: "Learn `versionAsOf` and `timestampAsOf`, validate changes, and understand when time travel is best for auditing, recovery, and regression analysis in Delta Lake."
 date: 2026-02-01
 tags: ["delta", "spark", "databricks", "testing", "certificacion"]
 difficulty: "basico"

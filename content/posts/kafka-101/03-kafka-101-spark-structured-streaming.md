@@ -1,5 +1,7 @@
 ---
 title: "Kafka + Spark: tu primer streaming real"
+summary: "Lee un tópico con Spark Structured Streaming y valida la salida en consola."
+description: "Conecta Kafka local con Spark Structured Streaming, define un esquema y ejecuta una lectura continua. Verás métricas simples y validaciones para confirmar que el stream funciona."
 date: 2026-02-01
 tags: ["kafka", "spark", "streaming", "infra", "testing"]
 difficulty: "basico"

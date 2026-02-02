@@ -1,5 +1,7 @@
 ---
 title: "Delta Table 101: tu primera tabla de inicio a fin"
+summary: "Crea tu primera tabla Delta, escribe y lee con operaciones básicas y verificables."
+description: "Recorrido end‑to‑end: crear tabla Delta, insertar datos, leer, filtrar y validar resultados con salidas esperadas. Base mínima para entender Delta antes de optimizar."
 date: 2026-02-01
 tags: ["spark", "delta", "databricks", "infra", "testing"]
 difficulty: "basico"

@@ -1,5 +1,7 @@
 ---
-title: "Delta storage layout: what’s really on disk"
+title: "Delta storage layout: what's really on disk"
+summary: "What Delta writes on disk (Parquet + _delta_log) and how to inspect it."
+description: "Explore the on‑disk layout, commits, and checkpoints, and see why it matters for performance, maintenance, and troubleshooting in production."
 date: 2026-02-01
 tags: ["delta", "spark", "infra", "testing", "certificacion"]
 difficulty: "basico"
@@ -11,7 +13,7 @@ notebook_ipynb: "/notebooks/spark-101/04-delta-storage-layout-basics.ipynb"
 notebook_py: "/notebooks/spark-101/04-delta-storage-layout-basics.py"
 cover:
   image: "/images/posts/delta-storage-layout-basics-nord.png"
-  alt: "Delta storage layout: what’s really on disk"
+  alt: "Delta storage layout: what's really on disk"
   relative: false
   hidden: false
 images:

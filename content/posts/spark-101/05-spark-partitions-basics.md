@@ -1,5 +1,7 @@
 ---
 title: "Particiones en Spark: la palanca del rendimiento"
+summary: "Cómo las particiones afectan rendimiento y cómo controlarlas en Spark."
+description: "Introduce `spark.sql.shuffle.partitions`, repartition y coalesce con un ejemplo reproducible para ver impacto en tiempos, stages y tamaño de shuffle."
 date: 2026-02-01
 tags: ["spark", "optimizacion", "infra", "testing", "certificacion"]
 difficulty: "basico"

@@ -1,5 +1,7 @@
 ---
 title: "Delta Table 101: your first table end‑to‑end"
+summary: "Create your first Delta table, write and read with core, verifiable operations."
+description: "End‑to‑end walkthrough: create a Delta table, insert data, read, filter, and validate results with expected outputs. The minimal base before any optimization work."
 date: 2026-02-01
 tags: ["spark", "delta", "databricks", "infra", "testing"]
 difficulty: "basico"

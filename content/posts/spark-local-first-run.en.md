@@ -1,5 +1,7 @@
 ---
 title: "Spark local: first run and verification"
+summary: "Start Spark locally with Docker, validate the setup, and run a first verification job."
+description: "Hands‑on guide to bring up the local stack, check UI/health, and run a first job. Includes minimal checks to confirm Master/Workers are healthy and ready for the rest of the series."
 date: 2026-02-01
 tags: ["spark", "infra", "testing", "databricks", "certificacion"]
 difficulty: "basico"

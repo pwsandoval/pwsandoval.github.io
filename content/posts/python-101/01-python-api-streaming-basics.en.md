@@ -1,5 +1,7 @@
 ---
 title: "Build a Spark Data Source API (real streaming)"
+summary: "Build a Spark Data Source API with real streaming from an external API."
+description: "Implement `SimpleDataSourceStreamReader`, define schema and offsets, and expose a custom format to read streaming events with control and observability, without external connectors."
 date: 2026-02-01
 tags: ["spark", "streaming", "infra", "testing", "databricks"]
 difficulty: "basico"
