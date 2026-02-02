@@ -1,30 +1,39 @@
 ---
-title: "Delta storage layout: parquet files + _delta_log"
+title: "Delta storage layout: qué hay realmente en disco"
 date: 2026-02-01
-tags: ["delta", "spark", "databricks"]
+tags: ["delta", "spark", "infra", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "10 min"
 slug: "delta-storage-layout-basics"
 series: ["Spark & Delta 101"]
 series_index: 4
+notebook_ipynb: "/notebooks/spark-101/04-delta-storage-layout-basics.ipynb"
+notebook_py: "/notebooks/spark-101/04-delta-storage-layout-basics.py"
+cover:
+  image: "/images/posts/delta-storage-layout-basics-nord.png"
+  alt: "Delta storage layout: qué hay realmente en disco"
+  relative: false
+  hidden: false
+images:
+  - "/images/posts/delta-storage-layout-basics-nord.png"
 ---
 
 {{< series_nav >}}
 
-{{< notebook_buttons >}}
+Una tabla Delta son archivos Parquet + un registro de transacciones. Este post te ayuda a ver la estructura de carpetas y entender qué escribe Delta en disco. Ref: [Delta Lake internals](https://docs.delta.io/latest/delta-batch.html#delta-transaction-log).
 
-Delta tables are just Parquet files plus a transaction log. This post helps you see the folder structure and build intuition about what Delta actually writes to disk.
+Descargas al final: [ir a Descargas](#descargas).
 
-## Quick takeaways
-- Delta tables store data in Parquet files.
-- The `_delta_log` folder tracks all versions and changes.
-- You can inspect the files to understand how Delta works.
+## En pocas palabras
+- Delta guarda datos en Parquet.
+- `_delta_log` registra versiones y cambios.
+- Puedes inspeccionar archivos para entender el comportamiento.
 
 ---
 
-## Run it yourself
-- **Local Spark (Full Docker):** default path for this blog.
-- **Databricks Free Edition:** quick alternative if you do not want Docker.
+## Ejecuta tú mismo
+- **Spark local (Docker):** ruta principal de este blog.
+- **Databricks Free Edition:** alternativa rápida si no quieres Docker.
 
 ```bash
 docker compose up
@@ -36,7 +45,8 @@ Links:
 
 ---
 
-## Create a small Delta table
+## Crear una tabla Delta pequeña
+Creamos una tabla básica para inspeccionar su layout en disco.
 ```python
 from pyspark.sql import functions as F
 
@@ -46,9 +56,13 @@ df = spark.range(0, 50_000).withColumn("group", (F.col("id") % 5).cast("int"))
 df.write.format("delta").mode("overwrite").save(delta_path)
 ```
 
+**Salida esperada:**
+Se crea `_delta_log` y archivos Parquet en el path.
+
 ---
 
-## Inspect the folder structure
+## Inspeccionar la estructura de carpetas
+Listamos directorios y archivos para ver `_delta_log` y Parquet.
 ```python
 import os
 
@@ -60,16 +74,30 @@ for root, dirs, files in os.walk(delta_path):
         print(f"{indent}  {f}")
 ```
 
+**Salida esperada (ejemplo):**
+```
+storage_layout/
+  _delta_log/
+  part-00000-...
+```
+
 ---
 
-## What to verify
-- You see a `_delta_log/` directory.
-- You see Parquet files in the table root.
-- The table still reads normally via `format("delta")`.
+## Qué verificar
+- Existe un directorio `_delta_log/`.
+- Hay archivos Parquet en la raíz.
+- La tabla se lee normal con `format("delta")`.
 
 ---
 
-## Notes from practice
-- Do not edit `_delta_log` files manually.
-- The log is what makes time travel and ACID possible.
-- Understanding the layout helps when debugging storage issues.
+## Notas de práctica
+- No edites `_delta_log` manualmente.
+- El log habilita time travel y ACID.
+- Entender el layout ayuda a depurar storage.
+
+---
+
+## Descargas {#descargas}
+Si no quieres copiar código, descarga el notebook o el .py.
+
+{{< notebook_buttons >}}

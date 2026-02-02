@@ -2,6 +2,17 @@ baseURL: https://pwsandoval.github.io/
 languageCode: en-us
 title: pw0
 theme: ["PaperMod"]
+defaultContentLanguage: es
+defaultContentLanguageInSubdir: false
+languages:
+  es:
+    languageCode: es
+    languageName: "Español"
+    weight: 1
+  en:
+    languageCode: en
+    languageName: "English"
+    weight: 2
 params:
   profileMode:
     enabled: true
@@ -26,13 +37,27 @@ params:
       url: "https://www.linkedin.com/in/pwsandoval"
     - name: github
       url: "https://github.com/pwsandoval"
+  ShowCodeCopyButtons: true
+  ShowPostNavLinks: true
+  ShowReadingTime: true
+  ShowWordCount: true
+  author: "pw"
+  assets:
+    favicon: "/favicon.ico"
 caches:
   images:
     dir: :cacheDir/images
+  getjson:
+    dir: :cacheDir/getjson
 markup:
   goldmark:
     renderer:
       unsafe: true
+  highlight:
+    noClasses: true
+    lineNos: true
+    lineNumbersInTable: true
+    style: "catppuccin-frappe"
 menu:
   main:
     - identifier: posts
@@ -43,6 +68,14 @@ menu:
       name: "tools"
       url: "/tools/"
       weight: 2
+    - identifier: tags
+      name: "tags"
+      url: "/tags/"
+      weight: 3
+    - identifier: archives
+      name: "archives"
+      url: "/archives/"
+      weight: 4
 taxonomies:
   tag: tags
   category: categories

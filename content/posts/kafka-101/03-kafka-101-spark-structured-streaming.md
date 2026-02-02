@@ -1,29 +1,31 @@
 ---
-title: "Kafka 101: Spark Structured Streaming read"
+title: "Kafka + Spark: tu primer streaming real"
 date: 2026-02-01
-tags: ["kafka", "spark", "streaming"]
+tags: ["kafka", "spark", "streaming", "infra", "testing"]
 difficulty: "basico"
 reading_time: "11 min"
 slug: "kafka-101-spark-structured-streaming"
 series: ["Kafka 101"]
 series_index: 3
+notebook_ipynb: "/notebooks/kafka-101/03-kafka-101-spark-structured-streaming.ipynb"
+notebook_py: "/notebooks/kafka-101/03-kafka-101-spark-structured-streaming.py"
 ---
 
 {{< series_nav >}}
 
-{{< notebook_buttons >}}
+Este post conecta Spark Structured Streaming a un tópico local de Kafka y lee mensajes en tiempo real. Ref: [Structured Streaming + Kafka](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html).
 
-This post connects Spark Structured Streaming to a local Kafka topic and reads messages in real time.
+Descargas al final: [ir a Descargas](#descargas).
 
-## Quick takeaways
-- Spark can read Kafka topics directly using the Kafka connector.
-- You can validate end-to-end streaming locally.
-- This is the bridge between ingestion and processing.
+## En pocas palabras
+- Spark puede leer Kafka directo con el connector.
+- Puedes validar streaming end‑to‑end localmente.
+- Es el puente entre ingesta y procesamiento.
 
 ---
 
-## Run it yourself
-- **Local Docker:** default path for this blog.
+## Ejecuta tú mismo
+- **Docker local:** ruta principal de este blog.
 
 ```bash
 docker compose up
@@ -35,14 +37,16 @@ Links:
 
 ---
 
-## Produce messages
+## Producir mensajes
+Genera eventos en el tópico para alimentar el stream.
 ```bash
 kafka-console-producer.sh --topic demo-events --bootstrap-server localhost:9092
 ```
 
 ---
 
-## Read with Spark Structured Streaming
+## Leer con Spark Structured Streaming
+Spark leerá el tópico y enviará los mensajes a consola.
 ```python
 df = (
     spark.readStream.format("kafka")
@@ -61,9 +65,19 @@ q = (
 )
 ```
 
+**Salida esperada:**
+Verás filas nuevas en consola cuando envíes mensajes.
+
 ---
 
-## What to verify
-- Messages appear in the Spark console sink.
-- The streaming query stays active while you produce data.
-- Stopping the producer does not crash the query.
+## Qué verificar
+- Los mensajes aparecen en la salida de consola de Spark.
+- La consulta streaming sigue activa mientras produces.
+- Detener el producer no rompe la consulta.
+
+---
+
+## Descargas {#descargas}
+Si no quieres copiar código, descarga el notebook o el .py.
+
+{{< notebook_buttons >}}

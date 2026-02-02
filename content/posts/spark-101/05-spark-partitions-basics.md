@@ -1,30 +1,32 @@
 ---
-title: "Spark partitions 101: why they matter for performance"
+title: "Particiones en Spark: la palanca del rendimiento"
 date: 2026-02-01
-tags: ["spark", "databricks", "optimizacion"]
+tags: ["spark", "optimizacion", "infra", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "10 min"
 slug: "spark-partitions-basics"
 series: ["Spark & Delta 101"]
 series_index: 5
+notebook_ipynb: "/notebooks/spark-101/05-spark-partitions-basics.ipynb"
+notebook_py: "/notebooks/spark-101/05-spark-partitions-basics.py"
 ---
 
 {{< series_nav >}}
 
-{{< notebook_buttons >}}
+Las particiones son la unidad de paralelismo en Spark. Este post muestra cómo el número de particiones cambia la distribución de tareas y el rendimiento. Ref: [repartition](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.repartition.html), [coalesce](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html).
 
-Partitions are the unit of parallelism in Spark. This post shows how partition count changes task distribution and why it affects performance.
+Descargas al final: [ir a Descargas](#descargas).
 
-## Quick takeaways
-- Too few partitions underutilize the cluster.
-- Too many partitions add overhead.
-- You can inspect partitions and adjust them safely.
+## En pocas palabras
+- Pocas particiones desaprovechan el cluster.
+- Demasiadas particiones agregan overhead.
+- Puedes inspeccionar y ajustar de forma segura.
 
 ---
 
-## Run it yourself
-- **Local Spark (Full Docker):** default path for this blog.
-- **Databricks Free Edition:** quick alternative if you do not want Docker.
+## Ejecuta tú mismo
+- **Spark local (Docker):** ruta principal de este blog.
+- **Databricks Free Edition:** alternativa rápida si no quieres Docker.
 
 ```bash
 docker compose up
@@ -36,36 +38,54 @@ Links:
 
 ---
 
-## Create a dataset
+## Crear un dataset
+Usamos un rango grande para ver cómo Spark lo particiona.
 ```python
 df = spark.range(0, 5_000_000)
 ```
 
 ---
 
-## Check current partitions
+## Ver particiones actuales
+Inspeccionamos cuántas particiones tiene el DataFrame.
 ```python
 df.rdd.getNumPartitions()
+```
+
+**Salida esperada (ejemplo):**
+```
+8
 ```
 
 ---
 
 ## Repartition vs coalesce
+Probamos ambos para entender su impacto en tasks y shuffle.
 ```python
 df_repart = df.repartition(64)
 df_coal = df.coalesce(8)
 ```
 
----
-
-## What to verify
-- The number of partitions changes as expected.
-- More partitions increase tasks; fewer partitions reduce them.
-- Task duration becomes more balanced with a reasonable count.
+**Salida esperada:**
+`df_repart` tendrá 64 particiones; `df_coal` tendrá 8 o menos.
 
 ---
 
-## Notes from practice
-- Start with defaults; adjust only when the evidence is clear.
-- Repartition triggers a full shuffle; coalesce avoids one.
-- Use Spark UI to see how partitions map to tasks.
+## Qué verificar
+- El número de particiones cambia como esperas.
+- Más particiones aumentan tareas; menos las reducen.
+- La duración de tareas se balancea con un número razonable.
+
+---
+
+## Notas de práctica
+- Empieza con defaults y ajusta con evidencia.
+- Repartition genera shuffle completo; coalesce lo evita.
+- Usa Spark UI para ver cómo se mapean tareas.
+
+---
+
+## Descargas {#descargas}
+Si no quieres copiar código, descarga el notebook o el .py.
+
+{{< notebook_buttons >}}

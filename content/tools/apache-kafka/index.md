@@ -1,23 +1,21 @@
 ---
 title: "Apache Kafka"
-icon: "apache-kafka.svg"        # ruta dentro de /static/icons/
-summary: "Distributed event streaming platform for high-throughput data pipelines and real-time analytics."
-# url: "/tools/apache-kafka/"
+icon: "apache-kafka.svg"
+summary: "Plataforma de streaming de eventos para pipelines y analítica en tiempo real."
 ---
 
-## Purpose
-Kafka is the event streaming platform used in the blog to demonstrate ingestion, buffering, and decoupled pipelines.
+Kafka es la herramienta que uso en el blog para ejemplos de ingesta, buffering y pipelines desacoplados.
 
-## Recommended path (local + free)
-Use Docker so the setup is reproducible and free for new teammates.
+## Ruta recomendada (local y gratis)
+Usa Docker para que el setup sea reproducible.
 
 **Workflow**
-1. Start the stack with `docker compose up`.
-2. Create a topic.
-3. Produce a few messages.
-4. Consume and verify them.
+1. Levanta el stack con `docker compose up`.
+2. Crea un tópico.
+3. Produce algunos mensajes.
+4. Consume y verifica.
 
-## What to measure (when you move to performance topics)
-- Message throughput (messages/sec).
-- Consumer lag (if applicable).
-- End-to-end latency (produce → consume).
+## Qué medir (cuando pases a performance)
+- Throughput (mensajes/segundo).
+- Lag del consumidor.
+- Latencia end‑to‑end.

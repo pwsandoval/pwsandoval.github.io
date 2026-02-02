@@ -1,36 +1,32 @@
 ---
-title: "PySpark DataFrame basics: select, filter, and write"
+title: "PySpark DataFrames: las tres operaciones diarias"
 date: 2026-02-01
-tags: ["spark", "databricks"]
+tags: ["spark", "databricks", "infra", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "11 min"
 slug: "pyspark-dataframe-basics"
 series: ["Spark & Delta 101"]
 series_index: 2
-cover:
-  image: "/images/posts/cover-pyspark-basics.svg"
-  alt: "Cover: PySpark DataFrame basics"
-  caption: "Core DataFrame operations for beginners"
-  relative: false
-  hidden: false
+notebook_ipynb: "/notebooks/spark-101/02-pyspark-dataframe-basics.ipynb"
+notebook_py: "/notebooks/spark-101/02-pyspark-dataframe-basics.py"
 ---
 
 {{< series_nav >}}
 
-{{< notebook_buttons >}}
+Si eres nuevo en Spark, empieza con estas tres operaciones: select, filter y write. Este post es un tour práctico con un dataset pequeño que puedes correr en cualquier lugar. Referencia: [DataFrame select](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.select.html), [filter](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.filter.html).
 
-If you are new to Spark, learn these three operations first: select, filter, and write. This post is a short, practical tour with a small dataset you can run anywhere.
+Descargas al final: [ir a Descargas](#descargas).
 
-## Quick takeaways
-- DataFrames are the core API you will use every day.
-- The basics (select, filter, groupBy) cover most daily tasks.
-- Writing data is part of the workflow, not an afterthought.
+## En pocas palabras
+- DataFrames es la API que usarás todos los días.
+- Lo básico (select, filter, groupBy) cubre la mayoría del trabajo.
+- Escribir datos es parte del flujo, no un extra.
 
 ---
 
-## Run it yourself
-- **Local Spark (Full Docker):** default path for this blog.
-- **Databricks Free Edition:** quick alternative if you do not want Docker.
+## Ejecuta tú mismo
+- **Spark local (Docker):** ruta principal de este blog.
+- **Databricks Free Edition:** alternativa rápida si no quieres Docker.
 
 ```bash
 docker compose up
@@ -42,7 +38,8 @@ Links:
 
 ---
 
-## Create a tiny dataset
+## Crear un dataset pequeño
+Creamos un DataFrame simple con columnas que usaremos luego.
 ```python
 from pyspark.sql import functions as F
 
@@ -55,38 +52,71 @@ df = (
 
 ---
 
-## Select and filter
+## Select y filter
+Seleccionamos columnas y filtramos para quedarnos con lo relevante.
 ```python
 filtered = df.select("id", "country", "amount").filter("amount > 50")
 filtered.show(5)
 ```
 
+**Salida esperada (ejemplo):**
+```
++---+-------+------+
+| id|country|amount|
++---+-------+------+
+|  1|     PE| 78.21|
+|  4|     MX| 65.03|
+...
+```
+
 ---
 
-## Group and aggregate
+## Agrupar y agregar
+Agrupamos por país para ver un resumen rápido.
 ```python
 summary = filtered.groupBy("country").count()
 summary.show()
 ```
 
+**Salida esperada (ejemplo):**
+```
++-------+-----+
+|country|count|
++-------+-----+
+|     PE|16667|
+|     MX|16666|
+|     CO|16667|
+```
+
 ---
 
-## Write the result
+## Escribir el resultado
+Guardamos el resultado para entender cómo queda en disco.
 ```python
 out_path = "/tmp/pyspark/basics"
 summary.write.mode("overwrite").parquet(out_path)
 ```
 
----
-
-## What to verify
-- `filtered.count()` is less than the original count.
-- The output folder exists and contains Parquet files.
-- The group counts make sense for your distribution.
+**Salida esperada:**
+Se crea la carpeta `out_path` con archivos Parquet.
 
 ---
 
-## Notes from practice
-- Always start by inspecting a small sample with `show()`.
-- Keep paths simple when teaching new users.
-- Save outputs to build intuition about file layouts.
+## Qué verificar
+- `filtered.count()` es menor que el conteo original.
+- La carpeta de salida existe y tiene Parquet.
+- Los conteos por grupo tienen sentido.
+
+---
+
+## Notas de práctica
+- Empieza mirando una muestra con `show()`.
+- Mantén rutas simples para enseñar.
+- Guarda outputs para entender el layout en disco.
+
+---
+
+## Descargas {#descargas}
+Si no quieres copiar código, descarga el notebook o el .py.
+
+{{< notebook_buttons >}}

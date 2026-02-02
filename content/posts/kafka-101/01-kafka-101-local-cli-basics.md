@@ -1,30 +1,32 @@
 ---
-title: "Kafka 101: local setup + CLI basics"
+title: "Kafka 101: tu primer tópico local"
 date: 2026-02-01
-tags: ["kafka", "infra"]
+tags: ["kafka", "infra", "streaming", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "9 min"
 slug: "kafka-101-local-cli-basics"
 series: ["Kafka 101"]
 series_index: 1
+notebook_ipynb: "/notebooks/kafka-101/01-kafka-101-local-cli-basics.ipynb"
+notebook_py: "/notebooks/kafka-101/01-kafka-101-local-cli-basics.py"
 ---
 
 {{< series_nav >}}
 
-{{< notebook_buttons >}}
+Este post te deja corriendo localmente y prueba que Kafka funciona con el ciclo mínimo de CLI: crear tópico, producir y consumir. Ref: [Kafka quickstart](https://kafka.apache.org/quickstart).
 
-This post gets you running locally and proves Kafka works with the minimal CLI loop: create a topic, produce messages, and consume them.
+Descargas al final: [ir a Descargas](#descargas).
 
-## Quick takeaways
-- Kafka is easiest to learn locally with Docker.
-- CLI is enough to validate your setup.
-- Once this works, you can integrate with Spark or Python.
+## En pocas palabras
+- Kafka se aprende más rápido local con Docker.
+- La CLI es suficiente para validar el setup.
+- Con esto listo, integras Spark o Python.
 
 ---
 
-## Run it yourself
-- **Local Docker:** default path for this blog.
-- **Databricks:** not needed for this post.
+## Ejecuta tú mismo
+- **Docker local:** ruta principal.
+- **Databricks:** no es necesario aquí.
 
 ```bash
 docker compose up
@@ -35,14 +37,21 @@ Links:
 
 ---
 
-## Create a topic
+## Crear un tópico
+Creamos un tópico simple para pruebas locales.
 ```bash
 kafka-topics.sh --create --topic demo-events --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
 ```
 
+**Salida esperada (ejemplo):**
+```
+Created topic demo-events.
+```
+
 ---
 
-## Produce messages
+## Producir mensajes
+Envia unas líneas de texto como eventos.
 ```bash
 kafka-console-producer.sh --topic demo-events --bootstrap-server localhost:9092
 ```
@@ -51,14 +60,25 @@ Type a few lines and press Enter.
 
 ---
 
-## Consume messages
+## Consumir mensajes
+Lee desde el inicio para validar que todo funciona.
 ```bash
 kafka-console-consumer.sh --topic demo-events --from-beginning --bootstrap-server localhost:9092
 ```
 
+**Salida esperada:**
+Verás las líneas que escribiste en el producer.
+
 ---
 
-## What to verify
-- Messages you typed are visible in the consumer.
-- The topic has the partition count you set.
-- You can stop and restart the consumer without data loss.
+## Qué verificar
+- Los mensajes aparecen en el consumidor.
+- El tópico tiene el número de particiones que definiste.
+- Puedes detener y reiniciar el consumidor sin perder datos.
+
+---
+
+## Descargas {#descargas}
+Si no quieres copiar código, descarga el notebook o el .py.
+
+{{< notebook_buttons >}}

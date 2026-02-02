@@ -1,36 +1,32 @@
 ---
-title: "Delta Time Travel: view older versions without backups"
+title: "Delta Time Travel: consulta el pasado con confianza"
 date: 2026-02-01
-tags: ["delta", "spark", "databricks"]
+tags: ["delta", "spark", "databricks", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "10 min"
 slug: "delta-time-travel-basics"
 series: ["Spark & Delta 101"]
 series_index: 3
-cover:
-  image: "/images/posts/cover-delta-time-travel.svg"
-  alt: "Cover: Delta Time Travel"
-  caption: "Delta time travel made simple"
-  relative: false
-  hidden: false
+notebook_ipynb: "/notebooks/spark-101/03-delta-time-travel-basics.ipynb"
+notebook_py: "/notebooks/spark-101/03-delta-time-travel-basics.py"
 ---
 
 {{< series_nav >}}
 
-{{< notebook_buttons >}}
+El “time travel” es una de las funciones más útiles de Delta. Permite consultar versiones anteriores sin backups. Este post muestra un antes/después simple para confiar en la técnica. Ref: [Delta Time Travel](https://docs.delta.io/latest/delta-batch.html#time-travel).
 
-Time travel is one of the most useful Delta features. It lets you query older versions of your table without backups. This post shows a simple before/after so you can trust it in real work.
+Descargas al final: [ir a Descargas](#descargas).
 
-## Quick takeaways
-- Delta tables keep versions in the transaction log.
-- You can query older versions with `versionAsOf` or `timestampAsOf`.
-- Use it for audits, debugging, and rollback verification.
+## En pocas palabras
+- Delta guarda versiones en el transaction log.
+- Puedes consultar versiones antiguas con `versionAsOf` o `timestampAsOf`.
+- Úsalo para auditoría, debugging y validación de rollback.
 
 ---
 
-## Run it yourself
-- **Local Spark (Full Docker):** default path for this blog.
-- **Databricks Free Edition:** quick alternative if you do not want Docker.
+## Ejecuta tú mismo
+- **Spark local (Docker):** ruta principal de este blog.
+- **Databricks Free Edition:** alternativa rápida si no quieres Docker.
 
 ```bash
 docker compose up
@@ -42,8 +38,9 @@ Links:
 
 ---
 
-## Create a small Delta table
-If you already ran **Delta Table 101**, you can reuse the same table path. Otherwise, run the snippet below.
+## Crear una tabla Delta pequeña
+Si ya corriste **Delta Table 101**, puedes reutilizar la misma ruta. Si no, usa este snippet.
+
 ```python
 from pyspark.sql import functions as F
 
@@ -55,7 +52,8 @@ df_v1.write.format("delta").mode("overwrite").save(delta_path)
 
 ---
 
-## Update the table (new version)
+## Actualizar la tabla (nueva versión)
+Creamos una nueva versión con overwrite para habilitar time travel.
 ```python
 df_v2 = spark.range(0, 10_000).withColumn("status", F.lit("v2"))
 df_v2.write.format("delta").mode("overwrite").save(delta_path)
@@ -63,7 +61,8 @@ df_v2.write.format("delta").mode("overwrite").save(delta_path)
 
 ---
 
-## Read older version
+## Leer una versión anterior
+Leemos la versión 0 para comparar con la última.
 ```python
 v1 = (
     spark.read.format("delta")
@@ -74,16 +73,31 @@ v1 = (
 v1.groupBy("status").count().show()
 ```
 
+**Salida esperada (ejemplo):**
+```
++------+-----+
+|status|count|
++------+-----+
+|    v1|10000|
+```
+
 ---
 
-## What to verify
-- Version 0 shows `status = v1`.
-- Latest version shows `status = v2`.
-- You can compare row counts across versions.
+## Qué verificar
+- La versión 0 muestra `status = v1`.
+- La última versión muestra `status = v2`.
+- Puedes comparar conteos entre versiones.
 
 ---
 
-## Notes from practice
-- Use time travel for audits, not as a permanent backup strategy.
-- If you vacuum aggressively, older versions may disappear.
-- Document the version you used when sharing results.
+## Notas de práctica
+- Usa time travel para auditorías, no como backup permanente.
+- Si haces vacuum agresivo, versiones antiguas desaparecen.
+- Documenta la versión usada cuando compartas resultados.
+
+---
+
+## Descargas {#descargas}
+Si no quieres copiar código, descarga el notebook o el .py.
+
+{{< notebook_buttons >}}

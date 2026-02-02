@@ -1,7 +1,7 @@
 ---
-title: "Delta Table 101: create, read, and overwrite safely"
+title: "Delta Table 101: tu primera tabla de inicio a fin"
 date: 2026-02-01
-tags: ["delta", "spark", "databricks"]
+tags: ["spark", "delta", "databricks", "infra", "testing"]
 difficulty: "basico"
 reading_time: "9 min"
 slug: "delta-table-101-create-read"
@@ -9,30 +9,24 @@ series: ["Spark & Delta 101"]
 series_index: 1
 notebook_ipynb: "/notebooks/spark-101/01-delta-table-101.ipynb"
 notebook_py: "/notebooks/spark-101/01-delta-table-101.py"
-cover:
-  image: "/images/posts/cover-delta-table-101.svg"
-  alt: "Cover: Delta Table 101"
-  caption: "Delta basics for new Spark users"
-  relative: false
-  hidden: false
 ---
 
 {{< series_nav >}}
 
-{{< notebook_buttons >}}
+Si eres nuevo en Delta Lake, este es el primer post que debes ejecutar. Se enfoca en lo mínimo que haces en trabajo real: crear una tabla Delta, leerla y sobrescribirla de forma segura. Referencia oficial: [Delta Lake](https://docs.delta.io/latest/delta-intro.html).
 
-If you are new to Delta Lake, this is the first post to run. It focuses on the minimal actions you do in real work: create a Delta table, read it back, and overwrite it safely.
+Descargas al final: [ir a Descargas](#descargas).
 
-## Quick takeaways
-- Delta tables are regular files + transaction log.
-- You can read/write Delta like a normal table, but with reliability.
-- This post gives you a minimal, reproducible flow to start.
+## En pocas palabras
+- Una tabla Delta es archivos + registro de transacciones.
+- Lees/escribes Delta como una tabla normal, pero con confiabilidad.
+- Este flujo te deja listo para empezar.
 
 ---
 
-## Run it yourself
-- **Local Spark (Full Docker):** default path for this blog.
-- **Databricks Free Edition:** quick alternative if you do not want Docker.
+## Ejecuta tú mismo
+- **Spark local (Docker):** ruta principal de este blog.
+- **Databricks Free Edition:** alternativa rápida si no quieres Docker.
 
 ```bash
 docker compose up
@@ -44,8 +38,8 @@ Links:
 
 ---
 
-## Minimal setup
-We will generate a small dataset, write it as Delta, then read it back.
+## Setup mínimo
+Generaremos un dataset pequeño, lo escribimos como Delta y luego lo leemos. Usamos `spark.range` para no depender de datos externos. Ref: [Spark range](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.range.html).
 
 ```python
 from pyspark.sql import functions as F
@@ -58,7 +52,8 @@ df = (
 
 ---
 
-## Create the Delta table
+## Crear la tabla Delta
+Aquí persistimos el DataFrame como Delta en una ruta local. Ref: [DataFrameWriter](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.html).
 ```python
 delta_path = "/tmp/delta/table_101"
 
@@ -67,30 +62,53 @@ df.write.format("delta").mode("overwrite").save(delta_path)
 
 ---
 
-## Read it back
+## Leerla de nuevo
+Leemos el mismo path para validar que quedó bien. Ref: [DataFrameReader](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.html).
 ```python
 read_back = spark.read.format("delta").load(delta_path)
 read_back.groupBy("group").count().show()
 ```
 
+**Salida esperada (ejemplo):**
+```
++-----+-----+
+|group|count|
++-----+-----+
+|    0|10000|
+|    1|10000|
+|    2|10000|
+...
+```
+
 ---
 
-## Overwrite safely (same schema)
+## Sobrescribir de forma segura (mismo schema)
+Reescribimos con el mismo esquema para simular una actualización.
 ```python
 df_filtered = df.filter("group < 5")
 df_filtered.write.format("delta").mode("overwrite").save(delta_path)
 ```
 
----
-
-## What to verify
-- The table reads without errors.
-- Counts change after overwrite.
-- The folder contains a `_delta_log` directory.
+**Salida esperada:**
+No verás salida directa, pero el conteo debe bajar cuando vuelvas a leer.
 
 ---
 
-## Notes from practice
-- Always use `format("delta")` explicitly to avoid ambiguity.
-- Start with a local path so you can inspect files on disk.
-- Keep paths simple for beginners.
+## Qué verificar
+- La tabla se lee sin errores.
+- Los conteos cambian después del overwrite.
+- La carpeta contiene `_delta_log`.
+
+---
+
+## Notas de práctica
+- Usa `format("delta")` explícito para evitar ambigüedad.
+- Empieza con una ruta local para inspeccionar archivos.
+- Mantén rutas simples para principiantes.
+
+---
+
+## Descargas {#descargas}
+Si no quieres copiar código, descarga el notebook o el .py.
+
+{{< notebook_buttons >}}
