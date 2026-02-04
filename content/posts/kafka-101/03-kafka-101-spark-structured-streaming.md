@@ -1,7 +1,7 @@
 ---
-title: "Kafka + Spark: tu primer streaming real"
-summary: "Lee un tópico con Spark Structured Streaming y valida la salida en consola."
-description: "Conecta Kafka local con Spark Structured Streaming, define un esquema y ejecuta una lectura continua. Verás métricas simples y validaciones para confirmar que el stream funciona."
+title: "Kafka + Spark: your first streaming read"
+summary: "Read a Kafka topic with Spark Structured Streaming and validate console output."
+description: "Connect local Kafka to Spark Structured Streaming, define a schema, and run a continuous read. Includes simple metrics and validations to confirm the stream is working."
 date: 2026-02-01
 tags: ["kafka", "spark", "streaming", "infra", "testing"]
 difficulty: "basico"
@@ -15,19 +15,19 @@ notebook_py: "/notebooks/kafka-101/03-kafka-101-spark-structured-streaming.py"
 
 {{< series_nav >}}
 
-Este post conecta Spark Structured Streaming a un tópico local de Kafka y lee mensajes en tiempo real. Ref: [Structured Streaming + Kafka](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html).
+This post connects Spark Structured Streaming to a local Kafka topic and reads messages in real time. Ref: [Structured Streaming + Kafka](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html).
 
-Descargas al final: [ir a Descargas](#descargas).
+Downloads at the end: [go to Downloads](#downloads).
 
-## En pocas palabras
-- Spark puede leer Kafka directo con el connector.
-- Puedes validar streaming end‑to‑end localmente.
-- Es el puente entre ingesta y procesamiento.
+## Quick takeaways
+- Spark can read Kafka topics directly using the Kafka connector.
+- You can validate end-to-end streaming locally.
+- This is the bridge between ingestion and processing.
 
 ---
 
-## Ejecuta tú mismo
-- **Docker local:** ruta principal de este blog.
+## Run it yourself
+- **Local Docker:** default path for this blog.
 
 ```bash
 docker compose up
@@ -39,16 +39,14 @@ Links:
 
 ---
 
-## Producir mensajes
-Genera eventos en el tópico para alimentar el stream.
+## Produce messages
 ```bash
 kafka-console-producer.sh --topic demo-events --bootstrap-server localhost:9092
 ```
 
 ---
 
-## Leer con Spark Structured Streaming
-Spark leerá el tópico y enviará los mensajes a consola.
+## Read with Spark Structured Streaming
 ```python
 df = (
     spark.readStream.format("kafka")
@@ -67,19 +65,19 @@ q = (
 )
 ```
 
-**Salida esperada:**
-Verás filas nuevas en consola cuando envíes mensajes.
+**Expected output:**
+You should see new rows in the console when you produce messages.
 
 ---
 
-## Qué verificar
-- Los mensajes aparecen en la salida de consola de Spark.
-- La consulta streaming sigue activa mientras produces.
-- Detener el producer no rompe la consulta.
+## What to verify
+- Messages appear in the Spark console sink.
+- The streaming query stays active while you produce data.
+- Stopping the producer does not crash the query.
 
 ---
 
-## Descargas {#descargas}
-Si no quieres copiar código, descarga el notebook o el .py.
+## Downloads {#downloads}
+If you want to run this without copying code, download the notebook or the .py export.
 
 {{< notebook_buttons >}}

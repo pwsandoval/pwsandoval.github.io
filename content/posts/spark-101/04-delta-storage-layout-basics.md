@@ -1,7 +1,7 @@
 ---
-title: "Delta storage layout: qué hay realmente en disco"
-summary: "Qué archivos se crean en Delta (Parquet + _delta_log) y cómo inspeccionarlos."
-description: "Explora el layout en disco, commits y checkpoints, y entiende por qué esto importa para performance, mantenimiento y troubleshooting en producción."
+title: "Delta storage layout: what's really on disk"
+summary: "What Delta writes on disk (Parquet + _delta_log) and how to inspect it."
+description: "Explore the on‑disk layout, commits, and checkpoints, and see why it matters for performance, maintenance, and troubleshooting in production."
 date: 2026-02-01
 tags: ["delta", "spark", "infra", "testing", "certificacion"]
 difficulty: "basico"
@@ -13,7 +13,7 @@ notebook_ipynb: "/notebooks/spark-101/04-delta-storage-layout-basics.ipynb"
 notebook_py: "/notebooks/spark-101/04-delta-storage-layout-basics.py"
 cover:
   image: "/images/posts/delta-storage-layout-basics-nord.png"
-  alt: "Delta storage layout: qué hay realmente en disco"
+  alt: "Delta storage layout: what's really on disk"
   relative: false
   hidden: false
 images:
@@ -22,20 +22,20 @@ images:
 
 {{< series_nav >}}
 
-Una tabla Delta son archivos Parquet + un registro de transacciones. Este post te ayuda a ver la estructura de carpetas y entender qué escribe Delta en disco. Ref: [Delta Lake internals](https://docs.delta.io/latest/delta-batch.html#delta-transaction-log).
+Delta tables are Parquet files plus a transaction log. This post helps you see the folder structure and build intuition about what Delta writes to disk. Ref: [Delta transaction log](https://docs.delta.io/latest/delta-batch.html#delta-transaction-log).
 
-Descargas al final: [ir a Descargas](#descargas).
+Downloads at the end: [go to Downloads](#downloads).
 
-## En pocas palabras
-- Delta guarda datos en Parquet.
-- `_delta_log` registra versiones y cambios.
-- Puedes inspeccionar archivos para entender el comportamiento.
+## Quick takeaways
+- Delta tables store data in Parquet files.
+- The `_delta_log` folder tracks all versions and changes.
+- You can inspect the files to understand how Delta works.
 
 ---
 
-## Ejecuta tú mismo
-- **Spark local (Docker):** ruta principal de este blog.
-- **Databricks Free Edition:** alternativa rápida si no quieres Docker.
+## Run it yourself
+- **Local Spark (Docker):** main path for this blog.
+- **Databricks Free Edition:** quick alternative if you do not want Docker.
 
 ```bash
 docker compose up
@@ -47,8 +47,8 @@ Links:
 
 ---
 
-## Crear una tabla Delta pequeña
-Creamos una tabla básica para inspeccionar su layout en disco.
+## Create a small Delta table
+Create a table we can inspect on disk.
 ```python
 from pyspark.sql import functions as F
 
@@ -58,13 +58,13 @@ df = spark.range(0, 50_000).withColumn("group", (F.col("id") % 5).cast("int"))
 df.write.format("delta").mode("overwrite").save(delta_path)
 ```
 
-**Salida esperada:**
-Se crea `_delta_log` y archivos Parquet en el path.
+**Expected output:**
+You should see `_delta_log` and Parquet files in the folder.
 
 ---
 
-## Inspeccionar la estructura de carpetas
-Listamos directorios y archivos para ver `_delta_log` y Parquet.
+## Inspect the folder structure
+List directories to confirm the layout.
 ```python
 import os
 
@@ -76,7 +76,7 @@ for root, dirs, files in os.walk(delta_path):
         print(f"{indent}  {f}")
 ```
 
-**Salida esperada (ejemplo):**
+**Expected output (example):**
 ```
 storage_layout/
   _delta_log/
@@ -85,21 +85,21 @@ storage_layout/
 
 ---
 
-## Qué verificar
-- Existe un directorio `_delta_log/`.
-- Hay archivos Parquet en la raíz.
-- La tabla se lee normal con `format("delta")`.
+## What to verify
+- You see a `_delta_log/` directory.
+- You see Parquet files in the table root.
+- The table still reads normally via `format("delta")`.
 
 ---
 
-## Notas de práctica
-- No edites `_delta_log` manualmente.
-- El log habilita time travel y ACID.
-- Entender el layout ayuda a depurar storage.
+## Notes from practice
+- Do not edit `_delta_log` files manually.
+- The log is what makes time travel and ACID possible.
+- Understanding the layout helps when debugging storage issues.
 
 ---
 
-## Descargas {#descargas}
-Si no quieres copiar código, descarga el notebook o el .py.
+## Downloads {#downloads}
+If you want to run this without copying code, download the notebook or the .py export.
 
 {{< notebook_buttons >}}

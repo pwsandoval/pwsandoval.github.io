@@ -1,7 +1,7 @@
 ---
-title: "Delta Time Travel: consulta el pasado con confianza"
-summary: "Consulta versiones anteriores con Time Travel y recupera datos con confianza."
-description: "Aprende `versionAsOf` y `timestampAsOf`, valida cambios y entiende cuándo usar time travel para auditoría, recovery y análisis de regresiones en Delta Lake."
+title: "Delta Time Travel: query the past with confidence"
+summary: "Query previous versions with Time Travel and recover data safely."
+description: "Learn `versionAsOf` and `timestampAsOf`, validate changes, and understand when time travel is best for auditing, recovery, and regression analysis in Delta Lake."
 date: 2026-02-01
 tags: ["delta", "spark", "databricks", "testing", "certificacion"]
 difficulty: "basico"
@@ -15,20 +15,20 @@ notebook_py: "/notebooks/spark-101/03-delta-time-travel-basics.py"
 
 {{< series_nav >}}
 
-El “time travel” es una de las funciones más útiles de Delta. Permite consultar versiones anteriores sin backups. Este post muestra un antes/después simple para confiar en la técnica. Ref: [Delta Time Travel](https://docs.delta.io/latest/delta-batch.html#time-travel).
+Time travel is one of the most useful Delta features. It lets you query older versions of your table without backups. This post shows a simple before/after so you can trust it in real work. Ref: [Delta Time Travel](https://docs.delta.io/latest/delta-batch.html#time-travel).
 
-Descargas al final: [ir a Descargas](#descargas).
+Downloads at the end: [go to Downloads](#downloads).
 
-## En pocas palabras
-- Delta guarda versiones en el transaction log.
-- Puedes consultar versiones antiguas con `versionAsOf` o `timestampAsOf`.
-- Úsalo para auditoría, debugging y validación de rollback.
+## Quick takeaways
+- Delta tables keep versions in the transaction log.
+- You can query older versions with `versionAsOf` or `timestampAsOf`.
+- Use it for audits, debugging, and rollback verification.
 
 ---
 
-## Ejecuta tú mismo
-- **Spark local (Docker):** ruta principal de este blog.
-- **Databricks Free Edition:** alternativa rápida si no quieres Docker.
+## Run it yourself
+- **Local Spark (Docker):** main path for this blog.
+- **Databricks Free Edition:** quick alternative if you do not want Docker.
 
 ```bash
 docker compose up
@@ -40,9 +40,8 @@ Links:
 
 ---
 
-## Crear una tabla Delta pequeña
-Si ya corriste **Delta Table 101**, puedes reutilizar la misma ruta. Si no, usa este snippet.
-
+## Create a small Delta table
+If you already ran **Delta Table 101**, you can reuse the same table path. Otherwise, run the snippet below.
 ```python
 from pyspark.sql import functions as F
 
@@ -54,8 +53,8 @@ df_v1.write.format("delta").mode("overwrite").save(delta_path)
 
 ---
 
-## Actualizar la tabla (nueva versión)
-Creamos una nueva versión con overwrite para habilitar time travel.
+## Update the table (new version)
+Overwrite to create a new version.
 ```python
 df_v2 = spark.range(0, 10_000).withColumn("status", F.lit("v2"))
 df_v2.write.format("delta").mode("overwrite").save(delta_path)
@@ -63,8 +62,8 @@ df_v2.write.format("delta").mode("overwrite").save(delta_path)
 
 ---
 
-## Leer una versión anterior
-Leemos la versión 0 para comparar con la última.
+## Read older version
+Read version 0 to compare with the latest.
 ```python
 v1 = (
     spark.read.format("delta")
@@ -75,7 +74,7 @@ v1 = (
 v1.groupBy("status").count().show()
 ```
 
-**Salida esperada (ejemplo):**
+**Expected output (example):**
 ```
 +------+-----+
 |status|count|
@@ -85,21 +84,21 @@ v1.groupBy("status").count().show()
 
 ---
 
-## Qué verificar
-- La versión 0 muestra `status = v1`.
-- La última versión muestra `status = v2`.
-- Puedes comparar conteos entre versiones.
+## What to verify
+- Version 0 shows `status = v1`.
+- Latest version shows `status = v2`.
+- You can compare row counts across versions.
 
 ---
 
-## Notas de práctica
-- Usa time travel para auditorías, no como backup permanente.
-- Si haces vacuum agresivo, versiones antiguas desaparecen.
-- Documenta la versión usada cuando compartas resultados.
+## Notes from practice
+- Use time travel for audits, not as a permanent backup strategy.
+- If you vacuum aggressively, older versions may disappear.
+- Document the version you used when sharing results.
 
 ---
 
-## Descargas {#descargas}
-Si no quieres copiar código, descarga el notebook o el .py.
+## Downloads {#downloads}
+If you want to run this without copying code, download the notebook or the .py export.
 
 {{< notebook_buttons >}}

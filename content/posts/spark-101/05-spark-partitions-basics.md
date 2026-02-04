@@ -1,7 +1,7 @@
 ---
-title: "Particiones en Spark: la palanca del rendimiento"
-summary: "Cómo las particiones afectan rendimiento y cómo controlarlas en Spark."
-description: "Introduce `spark.sql.shuffle.partitions`, repartition y coalesce con un ejemplo reproducible para ver impacto en tiempos, stages y tamaño de shuffle."
+title: "Spark partitions: the lever behind performance"
+summary: "How partitions affect performance and how to control them in Spark."
+description: "Introduce `spark.sql.shuffle.partitions`, repartition, and coalesce with a reproducible example to see impact on stages, time, and shuffle size."
 date: 2026-02-01
 tags: ["spark", "optimizacion", "infra", "testing", "certificacion"]
 difficulty: "basico"
@@ -15,20 +15,20 @@ notebook_py: "/notebooks/spark-101/05-spark-partitions-basics.py"
 
 {{< series_nav >}}
 
-Las particiones son la unidad de paralelismo en Spark. Este post muestra cómo el número de particiones cambia la distribución de tareas y el rendimiento. Ref: [repartition](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.repartition.html), [coalesce](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html).
+Partitions are the unit of parallelism in Spark. This post shows how partition count changes task distribution and performance. Ref: [repartition](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.repartition.html), [coalesce](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html).
 
-Descargas al final: [ir a Descargas](#descargas).
+Downloads at the end: [go to Downloads](#downloads).
 
-## En pocas palabras
-- Pocas particiones desaprovechan el cluster.
-- Demasiadas particiones agregan overhead.
-- Puedes inspeccionar y ajustar de forma segura.
+## Quick takeaways
+- Too few partitions underutilize the cluster.
+- Too many partitions add overhead.
+- You can inspect partitions and adjust them safely.
 
 ---
 
-## Ejecuta tú mismo
-- **Spark local (Docker):** ruta principal de este blog.
-- **Databricks Free Edition:** alternativa rápida si no quieres Docker.
+## Run it yourself
+- **Local Spark (Docker):** main path for this blog.
+- **Databricks Free Edition:** quick alternative if you do not want Docker.
 
 ```bash
 docker compose up
@@ -40,21 +40,21 @@ Links:
 
 ---
 
-## Crear un dataset
-Usamos un rango grande para ver cómo Spark lo particiona.
+## Create a dataset
+Use a large range to see partition behavior.
 ```python
 df = spark.range(0, 5_000_000)
 ```
 
 ---
 
-## Ver particiones actuales
-Inspeccionamos cuántas particiones tiene el DataFrame.
+## Check current partitions
+Inspect how many partitions the DataFrame has.
 ```python
 df.rdd.getNumPartitions()
 ```
 
-**Salida esperada (ejemplo):**
+**Expected output (example):**
 ```
 8
 ```
@@ -62,32 +62,32 @@ df.rdd.getNumPartitions()
 ---
 
 ## Repartition vs coalesce
-Probamos ambos para entender su impacto en tasks y shuffle.
+Compare both to understand their impact.
 ```python
 df_repart = df.repartition(64)
 df_coal = df.coalesce(8)
 ```
 
-**Salida esperada:**
-`df_repart` tendrá 64 particiones; `df_coal` tendrá 8 o menos.
+**Expected output:**
+`df_repart` has 64 partitions; `df_coal` has 8 or fewer.
 
 ---
 
-## Qué verificar
-- El número de particiones cambia como esperas.
-- Más particiones aumentan tareas; menos las reducen.
-- La duración de tareas se balancea con un número razonable.
+## What to verify
+- The number of partitions changes as expected.
+- More partitions increase tasks; fewer partitions reduce them.
+- Task duration becomes more balanced with a reasonable count.
 
 ---
 
-## Notas de práctica
-- Empieza con defaults y ajusta con evidencia.
-- Repartition genera shuffle completo; coalesce lo evita.
-- Usa Spark UI para ver cómo se mapean tareas.
+## Notes from practice
+- Start with defaults; adjust only when the evidence is clear.
+- Repartition triggers a full shuffle; coalesce avoids one.
+- Use Spark UI to see how partitions map to tasks.
 
 ---
 
-## Descargas {#descargas}
-Si no quieres copiar código, descarga el notebook o el .py.
+## Downloads {#downloads}
+If you want to run this without copying code, download the notebook or the .py export.
 
 {{< notebook_buttons >}}

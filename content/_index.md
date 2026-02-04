@@ -1,5 +1,5 @@
 ---
-title: "Inicio"
+title: "Home"
 ---
 
-Bienvenido. Aquí encontrarás posts y notebooks sobre Data Engineering con Spark y Databricks.
+Welcome. Here you will find posts and notebooks about Data Engineering with Spark and Databricks.

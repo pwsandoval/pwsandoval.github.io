@@ -1,23 +1,23 @@
 ---
 title: "Apache Spark"
 icon: "apache-spark.svg"
-summary: "Motor unificado para procesamiento de datos, SQL y pipelines reproducibles."
+summary: "Unified engine for data processing, SQL, and reproducible pipelines."
 ---
 
-Esta herramienta describe el **stack local de Spark con Docker** que uso en el blog. La idea es que puedas reproducir cada post sin depender de un cluster remoto.
+This tool documents the **local Spark Docker stack** used in this blog. The goal is reproducibility without a remote cluster.
 
-Si quieres saltar directo a la descarga, ve a [Descargar stack](#descarga).
+If you want to jump straight to the download, go to [Download stack](#download).
 
-## Qué incluye este stack
+## What this stack includes
 - Spark Master + Workers + History Server.
-- Volúmenes locales para datos, notebooks y exports.
-- Configuración reproducible y gratuita.
+- Local volumes for datasets, notebooks, and exports.
+- A free, reproducible setup for new contributors.
 
-## Paso a paso (con piezas reales del compose)
+## Step‑by‑step (with real compose pieces)
 
 ### 1) Spark Master
-Ejecuta el scheduler principal y expone la UI en el puerto `8080`.  
-Los workers se registran aquí.
+Runs the scheduler and exposes the UI on port `8080`.  
+Workers register here.
 
 ```yaml
 services:
@@ -40,9 +40,9 @@ services:
       - "8080:8080"
 ```
 
-### 2) Spark Workers (2 servicios)
-Cada worker aporta CPU/Memoria al cluster.  
-En este stack tienes dos workers de 2 cores y 2 GB cada uno.
+### 2) Spark Workers (2 services)
+Each worker provides compute resources.  
+This stack runs two workers with 2 cores and 2 GB each.
 
 ```yaml
   spark-worker-1:
@@ -79,7 +79,7 @@ En este stack tienes dos workers de 2 cores y 2 GB cada uno.
 ```
 
 ### 3) Spark History Server
-Lee los logs de eventos y expone la UI de historial en `18080`.
+Reads event logs and exposes the history UI on port `18080`.
 
 ```yaml
   spark-history:
@@ -98,8 +98,8 @@ Lee los logs de eventos y expone la UI de historial en `18080`.
       - ./docker/spark/logs:/tmp/spark-events
 ```
 
-### 4) Jupyter (opcional)
-Si mantienes este servicio, tendrás notebooks en `8888` y UI de Spark driver en `4040`.
+### 4) Jupyter (optional)
+If enabled, you get notebooks on `8888` and the Spark driver UI on `4040`.
 
 ```yaml
   jupyter:
@@ -115,32 +115,34 @@ Si mantienes este servicio, tendrás notebooks en `8888` y UI de Spark driver en
       - "4040:4040"
 ```
 
-## Cómo levantar el stack
-Desde `content/tools/apache-spark/docker/`:
+## How to start the stack
+From `content/tools/apache-spark/docker/`:
 
 ```bash
 docker compose up -d
 ```
 
-Apaga el stack al terminar:
+Stop it when you finish:
 
 ```bash
 docker compose down
 ```
 
-## Rutas de datos
-- Coloca datasets en `content/tools/apache-spark/docker/workspace/data/`
-- Dentro del contenedor se leen desde `/home/jovyan/work/data/`
+## Data paths
+- Put datasets in `content/tools/apache-spark/docker/workspace/data/`
+- Inside the container read them from `/home/jovyan/work/data/`
 
-## Puertos útiles
+## Useful ports
 - Spark Master UI: `http://localhost:8080`
-- Workers: `http://localhost:8081` y `http://localhost:8082`
+- Workers: `http://localhost:8081` and `http://localhost:8082`
 - Spark History: `http://localhost:18080`
-- Jupyter: `http://localhost:8888` (si está habilitado)
+- Jupyter: `http://localhost:8888` (if enabled)
 
 ---
 
-## docker-compose.yml (completo)
+---
+
+## docker-compose.yml (full)
 ```yaml
 x-spark-volumes: &spark-volumes
   - ./docker/spark/conf:/opt/spark/conf:rw
@@ -262,9 +264,9 @@ networks:
 
 ---
 
-## Descarga {#descarga}
-Si no quieres copiar archivos manualmente, descarga el stack completo:
+## Download {#download}
+If you do not want to copy files manually, download the full stack:
 
 <div class="notebook-buttons">
-  <a class="notebook-btn" href="/downloads/spark-docker-stack.zip">Descargar stack completo de Spark (Docker)</a>
+  <a class="notebook-btn" href="/downloads/spark-docker-stack.zip">Download the full Spark Docker stack</a>
 </div>

@@ -2,8 +2,8 @@ baseURL: https://pwsandoval.github.io/
 languageCode: en-us
 title: pw0
 theme: ["PaperMod"]
-defaultContentLanguage: es
-defaultContentLanguageInSubdir: false
+defaultContentLanguage: en
+defaultContentLanguageInSubdir: true
 languages:
   es:
     languageCode: es

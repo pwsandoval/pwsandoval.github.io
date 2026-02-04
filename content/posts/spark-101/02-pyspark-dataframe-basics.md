@@ -1,7 +1,7 @@
 ---
-title: "PySpark DataFrames: las tres operaciones diarias"
-summary: "Select, filter y agregaciones: las tres operaciones diarias en PySpark."
-description: "Guía práctica con ejemplos claros y salidas esperadas para dominar transformaciones básicas en DataFrames. Incluye patrones de chaining legibles y validaciones rápidas."
+title: "PySpark DataFrames: the three daily moves"
+summary: "Select, filter, and aggregates: the three daily moves in PySpark."
+description: "Practical guide with clear examples and expected outputs to master core DataFrame transformations. Includes readable chaining patterns and quick validations."
 date: 2026-02-01
 tags: ["spark", "databricks", "infra", "testing", "certificacion"]
 difficulty: "basico"
@@ -15,20 +15,20 @@ notebook_py: "/notebooks/spark-101/02-pyspark-dataframe-basics.py"
 
 {{< series_nav >}}
 
-Si eres nuevo en Spark, empieza con estas tres operaciones: select, filter y write. Este post es un tour práctico con un dataset pequeño que puedes correr en cualquier lugar. Referencia: [DataFrame select](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.select.html), [filter](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.filter.html).
+If you are new to Spark, start with these three operations: select, filter, and write. This is a short, practical tour with a small dataset you can run anywhere. Reference: [select](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.select.html), [filter](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.filter.html).
 
-Descargas al final: [ir a Descargas](#descargas).
+Downloads at the end: [go to Downloads](#downloads).
 
-## En pocas palabras
-- DataFrames es la API que usarás todos los días.
-- Lo básico (select, filter, groupBy) cubre la mayoría del trabajo.
-- Escribir datos es parte del flujo, no un extra.
+## Quick takeaways
+- DataFrames are the core API you will use every day.
+- The basics (select, filter, groupBy) cover most daily tasks.
+- Writing data is part of the workflow, not an afterthought.
 
 ---
 
-## Ejecuta tú mismo
-- **Spark local (Docker):** ruta principal de este blog.
-- **Databricks Free Edition:** alternativa rápida si no quieres Docker.
+## Run it yourself
+- **Local Spark (Docker):** main path for this blog.
+- **Databricks Free Edition:** quick alternative if you do not want Docker.
 
 ```bash
 docker compose up
@@ -40,8 +40,8 @@ Links:
 
 ---
 
-## Crear un dataset pequeño
-Creamos un DataFrame simple con columnas que usaremos luego.
+## Create a tiny dataset
+We build a small DataFrame we can explore.
 ```python
 from pyspark.sql import functions as F
 
@@ -54,33 +54,32 @@ df = (
 
 ---
 
-## Select y filter
-Seleccionamos columnas y filtramos para quedarnos con lo relevante.
+## Select and filter
+Pick columns and filter to keep relevant rows.
 ```python
 filtered = df.select("id", "country", "amount").filter("amount > 50")
 filtered.show(5)
 ```
 
-**Salida esperada (ejemplo):**
+**Expected output (example):**
 ```
 +---+-------+------+
 | id|country|amount|
 +---+-------+------+
 |  1|     PE| 78.21|
-|  4|     MX| 65.03|
 ...
 ```
 
 ---
 
-## Agrupar y agregar
-Agrupamos por país para ver un resumen rápido.
+## Group and aggregate
+Group by country to get a quick summary.
 ```python
 summary = filtered.groupBy("country").count()
 summary.show()
 ```
 
-**Salida esperada (ejemplo):**
+**Expected output (example):**
 ```
 +-------+-----+
 |country|count|
@@ -92,33 +91,33 @@ summary.show()
 
 ---
 
-## Escribir el resultado
-Guardamos el resultado para entender cómo queda en disco.
+## Write the result
+Persist the output to see the on‑disk layout.
 ```python
 out_path = "/tmp/pyspark/basics"
 summary.write.mode("overwrite").parquet(out_path)
 ```
 
-**Salida esperada:**
-Se crea la carpeta `out_path` con archivos Parquet.
+**Expected output:**
+The output folder is created with Parquet files.
 
 ---
 
-## Qué verificar
-- `filtered.count()` es menor que el conteo original.
-- La carpeta de salida existe y tiene Parquet.
-- Los conteos por grupo tienen sentido.
+## What to verify
+- `filtered.count()` is less than the original count.
+- The output folder exists and contains Parquet files.
+- The group counts make sense for your distribution.
 
 ---
 
-## Notas de práctica
-- Empieza mirando una muestra con `show()`.
-- Mantén rutas simples para enseñar.
-- Guarda outputs para entender el layout en disco.
+## Notes from practice
+- Always start by inspecting a small sample with `show()`.
+- Keep paths simple when teaching new users.
+- Save outputs to build intuition about file layouts.
 
 ---
 
-## Descargas {#descargas}
-Si no quieres copiar código, descarga el notebook o el .py.
+## Downloads {#downloads}
+If you want to run this without copying code, download the notebook or the .py export.
 
 {{< notebook_buttons >}}

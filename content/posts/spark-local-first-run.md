@@ -1,7 +1,7 @@
 ---
-title: "Spark local: primer arranque y verificación"
-summary: "Arranca Spark local con Docker, valida el entorno y ejecuta un primer job de verificación."
-description: "Guía práctica para levantar el stack local, comprobar UI/health y correr un primer job. Incluye checks mínimos para confirmar Spark Master/Workers y que tu entorno quede listo para los posts."
+title: "Spark local: first run and verification"
+summary: "Start Spark locally with Docker, validate the setup, and run a first verification job."
+description: "Hands‑on guide to bring up the local stack, check UI/health, and run a first job. Includes minimal checks to confirm Master/Workers are healthy and ready for the rest of the series."
 date: 2026-02-01
 tags: ["spark", "infra", "testing", "databricks", "certificacion"]
 difficulty: "basico"
@@ -11,27 +11,27 @@ notebook_ipynb: "/notebooks/spark-101/00-env-check.ipynb"
 notebook_py: "/notebooks/spark-101/00-env-check.py"
 ---
 
-Este post es tu **primer paso** antes de correr cualquier notebook. Verificamos que Spark levanta, que el UI responde y que puedes escribir/leer Parquet. Úsalo como checklist inicial.
+This post is your **first step** before running any notebook. We verify Spark starts, the UI responds, and you can write/read Parquet.
 
-Descargas al final: [ir a Descargas](#descargas).
+Downloads at the end: [go to Downloads](#downloads).
 
-## En pocas palabras
-- Confirmas que Spark inicia sin errores.
-- Verificas el Spark UI y versión.
-- Escribes/lees Parquet en el volumen local.
+## At a glance
+- Confirm Spark starts without errors.
+- Verify Spark UI and version.
+- Write/read Parquet on the local volume.
 
 ---
 
-## Ejecuta tú mismo
-Usa el stack de Spark con Docker de este blog.
+## Run it yourself
+Use the Spark Docker stack from this blog.
 
 Links:
 - [Apache Spark tool](/tools/apache-spark/)
 
 ---
 
-## 1) Iniciar Spark y ver versión
-Este bloque prueba que Spark está vivo.
+## 1) Start Spark and check version
+This confirms Spark is alive.
 
 ```python
 from pyspark.sql import SparkSession
@@ -46,32 +46,32 @@ spark = (
 spark.version
 ```
 
-**Salida esperada (ejemplo):**
+**Expected output (example):**
 ```
 '3.5.1'
 ```
 
-Abre el UI en `http://localhost:4040` y confirma que ves el nombre de la app.
+Open the UI at `http://localhost:4040` and confirm the app name.
 
 ---
 
-## 2) Conteo simple
-Un conteo básico valida que el cluster ejecuta jobs.
+## 2) Simple count
+A basic count validates jobs execute correctly.
 
 ```python
 df = spark.range(0, 1_000_000)
 df.count()
 ```
 
-**Salida esperada:**
+**Expected output:**
 ```
 1000000
 ```
 
 ---
 
-## 3) Escribir y leer Parquet
-Esto valida que el volumen local está bien montado.
+## 3) Write and read Parquet
+This validates that local volumes are mounted correctly.
 
 ```python
 out_path = "/home/jovyan/work/data/env_check_parquet"
@@ -81,21 +81,21 @@ df2 = spark.read.parquet(out_path)
 df2.count()
 ```
 
-**Salida esperada:**
+**Expected output:**
 ```
 1000000
 ```
 
 ---
 
-## Notas de práctica
-- Si el UI no carga, revisa el puerto en Docker.
-- Si el path falla, revisa los volúmenes en el compose.
-- Este post es la base antes de **Delta Table 101**.
+## Notes from practice
+- If UI does not load, check the port in Docker.
+- If the path fails, review volume mounts.
+- This post is the base before **Delta Table 101**.
 
 ---
 
-## Descargas {#descargas}
-Si no quieres copiar código, descarga el notebook o el .py.
+## Downloads {#downloads}
+If you do not want to copy code, download the notebook or the .py.
 
 {{< notebook_buttons >}}

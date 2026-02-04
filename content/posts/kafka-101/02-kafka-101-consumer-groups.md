@@ -1,7 +1,7 @@
 ---
-title: "Consumer groups en Kafka: cómo se reparte el trabajo"
-summary: "Entiende cómo Kafka reparte el trabajo con consumer groups y particiones."
-description: "Explica offsets, particiones y rebalances con un ejemplo reproducible que muestra cómo se divide el consumo entre consumidores y qué ocurre cuando se escala o falla un nodo."
+title: "Kafka consumer groups: how work gets split"
+summary: "Understand how consumer groups and partitions split work."
+description: "Explains offsets, partitions, and rebalances with a runnable example that shows how consumption is split across consumers and what happens when scaling or failures occur."
 date: 2026-02-01
 tags: ["kafka", "infra", "streaming", "testing", "certificacion"]
 difficulty: "basico"
@@ -15,19 +15,19 @@ notebook_py: "/notebooks/kafka-101/02-kafka-101-consumer-groups.py"
 
 {{< series_nav >}}
 
-Este post muestra cómo los consumer groups reparten trabajo y cómo se mueven los offsets. Es el modelo mental clave antes de usar Spark Streaming. Ref: [Consumer groups](https://kafka.apache.org/documentation/#intro_consumers).
+This post shows how consumer groups distribute work and how offsets move. It is the mental model you need before streaming with Spark. Ref: [Consumer groups](https://kafka.apache.org/documentation/#intro_consumers).
 
-Descargas al final: [ir a Descargas](#descargas).
+Downloads at the end: [go to Downloads](#downloads).
 
-## En pocas palabras
-- Los consumer groups dividen particiones entre instancias.
-- Los offsets indican por dónde va cada grupo.
-- El rebalance es normal cuando entran o salen consumidores.
+## Quick takeaways
+- Consumer groups split partitions across instances.
+- Offsets track where each consumer group is in the topic.
+- Rebalancing is normal when consumers start or stop.
 
 ---
 
-## Ejecuta tú mismo
-- **Docker local:** ruta principal de este blog.
+## Run it yourself
+- **Local Docker:** main path for this blog.
 
 ```bash
 docker compose up
@@ -38,8 +38,7 @@ Links:
 
 ---
 
-## Inicia dos consumidores en el mismo grupo
-Esto simula dos instancias trabajando en paralelo.
+## Start two consumers in the same group
 ```bash
 kafka-console-consumer.sh --topic demo-events --bootstrap-server localhost:9092 --group demo-group
 ```
@@ -48,13 +47,12 @@ Open a second terminal and run the same command. Produce a few messages and obse
 
 ---
 
-## Ver offsets del grupo
-Aquí confirmas cómo avanzan los offsets del grupo.
+## Check group offsets
 ```bash
 kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group demo-group
 ```
 
-**Salida esperada (ejemplo):**
+**Expected output (example):**
 ```
 TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG
 demo-events 0  42  42  0
@@ -62,14 +60,14 @@ demo-events 0  42  42  0
 
 ---
 
-## Qué verificar
-- Cada consumidor recibe un subconjunto de particiones.
-- Los offsets avanzan cuando se consumen mensajes.
-- El rebalance ocurre cuando un consumidor se detiene.
+## What to verify
+- Each consumer receives a subset of partitions.
+- Offsets advance as messages are consumed.
+- Rebalancing happens when a consumer stops.
 
 ---
 
-## Descargas {#descargas}
-Si no quieres copiar código, descarga el notebook o el .py.
+## Downloads {#downloads}
+If you want to run this without copying code, download the notebook or the .py export.
 
 {{< notebook_buttons >}}

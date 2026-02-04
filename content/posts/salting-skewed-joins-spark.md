@@ -1,7 +1,7 @@
 ---
-title: "Arregla joins con skew en Spark usando salting"
-summary: "Caso reproducible de skew y solución con salting, con métricas antes/después y un ejemplo real."
-description: "Detecta joins con skew en Spark y aplica salting para repartir las llaves “hot”. Verás el antes/después con tiempos de stage y shuffle, una repro sintética y un dataset real con descargas al final."
+title: "Fix skewed joins in Spark with salting"
+summary: "Reproducible skew case and salting fix with before/after metrics and a real example."
+description: "Detect skewed joins in Spark and apply salting to spread hot keys. You will compare before/after stage and shuffle times, with a synthetic repro and a real dataset plus downloads at the end."
 date: 2026-02-01
 tags: ["spark", "databricks", "optimizacion", "testing", "infra"]
 difficulty: "intermedio"
@@ -9,28 +9,28 @@ reading_time: "12 min"
 slug: "salting-skewed-joins-spark"
 ---
 
-Este post muestra primero un caso simple y reproducible de skew, y luego aplica la misma idea a un dataset más real. El objetivo es que la diferencia de performance sea evidente y fácil de medir. Ref: [Spark SQL performance](https://spark.apache.org/docs/latest/sql-performance-tuning.html).
+This post shows a simple, repeatable skew scenario first, then applies the same idea to a more realistic dataset. The goal is to make the performance difference obvious and easy to capture. Ref: [Spark SQL performance](https://spark.apache.org/docs/latest/sql-performance-tuning.html).
 
-Descargas al final: [ir a Descargas](#descargas).
+Downloads at the end: [go to Downloads](#downloads).
 
-## En pocas palabras
-- El sesgo (skew) genera tasks lentas y stages largos.
-- El salting reparte llaves “hot” entre particiones.
-- Medirás **antes/después** con tiempos de stage y shuffle.
-- Incluye repro sintética y ejemplo con dataset real.
-
----
-
-## Por qué el skew duele (y cómo ayuda el salting)
-Cuando una llave domina, Spark envía casi todo el trabajo a pocas tasks. Esos “stragglers” controlan el tiempo total del stage. El salting agrega un bucket aleatorio a la llave hot para repartir las filas pesadas entre más particiones y balancear tiempos.
+## At a glance
+- Skewed keys create long-running join tasks and slow stages.
+- Salting spreads hot keys across partitions to remove bottlenecks.
+- You will capture **before/after** stage time and shuffle metrics.
+- Includes a quick synthetic repro and a real dataset example.
 
 ---
 
-## Repro rápida (sintética)
-La versión mínima para ver el efecto con claridad.
+## Why skew hurts (and how salting helps)
+When a single key dominates, Spark sends most of the work to a few tasks. Those stragglers control the total stage time. Salting adds a small random bucket to the skewed key so the heavy rows are split across many partitions, making task times more balanced.
 
-### Baseline (join con skew)
-Primero ejecutamos el join sin mitigación para observar el cuello de botella.
+---
+
+## Quick repro you can run now (synthetic)
+This is the minimal version you can run anywhere to see the effect clearly.
+
+### Baseline (skewed join)
+First run the join without mitigation to observe the bottleneck.
 ```python
 from pyspark.sql import functions as F
 
@@ -47,11 +47,11 @@ baseline = events.join(lookup, on="key", how="left")
 baseline.count()
 ```
 
-**Salida esperada:**
-Un número grande (por ejemplo `10000000`).
+**Expected output:**
+A large number (e.g. `10000000`).
 
-### Después de salting (mismo join, tasks balanceadas)
-Aplicamos salting para repartir la llave hot entre particiones.
+### After salting (same join, balanced tasks)
+Apply salting to spread the hot key across partitions.
 ```python
 from pyspark.sql import functions as F
 
@@ -70,16 +70,17 @@ optimized = events_salted.join(lookup_salted, on=["key", "salt"], how="left")
 optimized.count()
 ```
 
-**Salida esperada:**
-El mismo conteo que el baseline.
+**Expected output:**
+Same count as baseline.
 
 ---
 
-## Ejemplo real (NYC Taxi + zones)
-Usa un dataset real para un caso práctico, manteniendo el mismo patrón de skew.
+## A more real example (NYC Taxi + zones)
+This example uses a real dataset so you can show a practical case. It still demonstrates the same skew pattern.
 
-### Cargar datos (Docker local primero)
-Coloca los archivos de NYC Taxi en `content/tools/apache-spark/docker/workspace/data/nyc_taxi/` para que se vean en el contenedor como `/home/jovyan/work/data/nyc_taxi/`.
+### Load data (Local Docker first)
+Use local paths to keep the example reproducible.
+Place the NYC Taxi files under `content/tools/apache-spark/docker/workspace/data/nyc_taxi/` so they map into the container at `/home/jovyan/work/data/nyc_taxi/`.
 
 ```python
 trips = (
@@ -97,8 +98,8 @@ zones = (
 )
 ```
 
-### Cargar datos (Databricks sample data)
-Si estás en Databricks, usa los datasets de ejemplo.
+### Load data (Databricks sample data)
+If you are on Databricks, use the sample datasets.
 ```python
 trips = (
     spark.read.format("csv")
@@ -115,8 +116,8 @@ zones = (
 )
 ```
 
-### Crear una llave con skew (simular un “hot” zone)
-Forzamos skew para que el efecto sea visible.
+### Create a skewed key (simulate a hot pickup zone)
+Force skew so the effect is visible.
 ```python
 from pyspark.sql import functions as F
 
@@ -129,11 +130,11 @@ baseline_real = trips_skewed.join(zones, trips_skewed.PULocationID == zones.Loca
 baseline_real.count()
 ```
 
-**Salida esperada:**
-Un conteo mayor a cero (depende del dataset).
+**Expected output:**
+A positive count (depends on the dataset).
 
-### Aplicar salting
-Agregamos un salt para distribuir las filas calientes.
+### Apply salting
+Add a salt column to distribute hot rows.
 ```python
 salt_buckets = 16
 
@@ -154,39 +155,39 @@ optimized_real = trips_salted.join(
 optimized_real.count()
 ```
 
-**Salida esperada:**
-El mismo conteo que el baseline real.
+**Expected output:**
+Same count as the real baseline.
 
 ---
 
-## Antes/después: qué capturar
-Agrega tus métricas reales después de ejecutar el código.
+## Before/after: what to capture (and where to place it)
+You should add your own measurements here after running the code.
 
-**Agrega estos números**
-- Tiempo total del job (baseline vs salted).
-- Duración del stage del join.
-- Shuffle read/write del stage.
-- Max task time vs mediana.
+**Add these numbers**
+- Total job time (baseline vs salted).
+- Join stage duration.
+- Shuffle read/write for the join stage.
+- Max task time vs median task time.
 
-**Agrega estas capturas**
-- Spark UI: stage baseline con tasks desbalanceadas.
-- Spark UI: stage con salting y tasks balanceadas.
-- SQL tab: plan físico mostrando el join con salting.
-
----
-
-## Notas de práctica
-- Empieza con `salt_buckets` pequeño (8 o 16) y mide.
-- Aplica salting solo a llaves hot.
-- Si el patrón cambia, revisa la lógica.
+**Add these screenshots**
+- Spark UI: baseline join stage with skewed tasks.
+- Spark UI: salted join stage with balanced tasks.
+- SQL tab: physical plan (showing salted join).
 
 ---
 
-## Ejecuta tú mismo
-- **Spark local (Docker):** ruta principal del blog.
-- **Databricks Free Edition:** alternativa rápida.
+## Notes from practice
+- Start with a small `salt_buckets` value (8 or 16) and measure.
+- Only salt the heavy keys; do not apply it globally.
+- If the skew pattern changes frequently, revisit the logic.
 
-### Docker quick start
+---
+
+## Run it yourself
+- **Local Spark (Full Docker):** default path for this blog.
+- **Databricks Free Edition:** quick alternative if you do not want Docker.
+
+### Local (Docker) quick start
 ```bash
 docker compose up
 ```
@@ -197,7 +198,7 @@ Links:
 
 ---
 
-## Descargas {#descargas}
-Si no quieres copiar código, descarga el notebook o el .py.
+## Downloads {#downloads}
+If you do not want to copy code, download the notebook or the .py.
 
 {{< notebook_buttons >}}

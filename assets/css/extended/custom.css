@@ -2,6 +2,10 @@
   --main-width: 1100px;
 }
 
+body {
+  background: var(--code-bg);
+}
+
 /* ================================
    Tools grid (2 cards per row)
    ================================ */
@@ -33,7 +37,9 @@
   background: var(--entry);
   text-decoration: none;
   color: var(--primary-text);
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
 }
 
 /* Hover: slightly highlight */
@@ -65,7 +71,9 @@ body.dark .tool-row:hover .tool-logo[src*="kafka"] {
   object-fit: contain;
   filter: grayscale(100%);
   opacity: 0.9;
-  transition: filter 0.25s ease, opacity 0.25s ease;
+  transition:
+    filter 0.25s ease,
+    opacity 0.25s ease;
 }
 
 /* Ajuste visual solo para Apache Airflow (cuadrado y pesado) */
@@ -101,4 +109,15 @@ body .tool-logo[src*="kafka"] {
   font-size: 14px;
   line-height: 1.6;
   color: var(--secondary);
+}
+
+.post-single {
+  background: var(--entry);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--gap);
+}
+
+.post-single .post-header {
+  margin: 0px auto var(--content-gap);
 }
