@@ -82,7 +82,9 @@
   {{- if (ne (.Param "hideSummary") true) }}
   <div class="entry-content">
     {{- $summary := .Params.description | default .Params.summary | default .Summary -}}
-    <p>{{ $summary | plainify | replaceRE "`" "" | htmlUnescape }}</p>
+    {{- with $summary }}
+    <p>{{ . | plainify | replaceRE "`" "" | htmlUnescape }}</p>
+    {{- end }}
   </div>
   {{- end }}
   {{- if not (.Param "hideMeta") }}

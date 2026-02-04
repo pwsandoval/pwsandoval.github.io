@@ -1,5 +1,5 @@
 ---
-title: "PySpark DataFrames: the three daily moves"
+title: "PySpark basics for everyday work"
 summary: "Select, filter, and aggregates: the three daily moves in PySpark."
 description: "Practical guide with clear examples and expected outputs to master core DataFrame transformations. Includes readable chaining patterns and quick validations."
 date: 2026-02-01

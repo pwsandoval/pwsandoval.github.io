@@ -1,5 +1,5 @@
 ---
-title: "Spark partitions: the lever behind performance"
+title: "Spark partitions without the pain"
 summary: "How partitions affect performance and how to control them in Spark."
 description: "Introduce `spark.sql.shuffle.partitions`, repartition, and coalesce with a reproducible example to see impact on stages, time, and shuffle size."
 date: 2026-02-01

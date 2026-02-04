@@ -1,5 +1,5 @@
 ---
-title: "Delta storage layout: what's really on disk"
+title: "What Delta stores on disk"
 summary: "What Delta writes on disk (Parquet + _delta_log) and how to inspect it."
 description: "Explore the on‑disk layout, commits, and checkpoints, and see why it matters for performance, maintenance, and troubleshooting in production."
 date: 2026-02-01

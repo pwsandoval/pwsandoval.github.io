@@ -1,5 +1,5 @@
 ---
-title: "Fix skewed joins in Spark with salting"
+title: "Fix skewed Spark joins"
 summary: "Reproducible skew case and salting fix with before/after metrics and a real example."
 description: "Detect skewed joins in Spark and apply salting to spread hot keys. You will compare before/after stage and shuffle times, with a synthetic repro and a real dataset plus downloads at the end."
 date: 2026-02-01

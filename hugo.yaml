@@ -76,6 +76,10 @@ menu:
       name: "archives"
       url: "/archives/"
       weight: 4
+    - identifier: series
+      name: "series"
+      url: "/series/"
+      weight: 5
 taxonomies:
   tag: tags
   category: categories

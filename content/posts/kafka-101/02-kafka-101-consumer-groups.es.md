@@ -1,5 +1,5 @@
 ---
-title: "Consumer groups en Kafka: cómo se reparte el trabajo"
+title: "Consumer groups de Kafka, en claro"
 summary: "Entiende cómo Kafka reparte el trabajo con consumer groups y particiones."
 description: "Explica offsets, particiones y rebalances con un ejemplo reproducible que muestra cómo se divide el consumo entre consumidores y qué ocurre cuando se escala o falla un nodo."
 date: 2026-02-01

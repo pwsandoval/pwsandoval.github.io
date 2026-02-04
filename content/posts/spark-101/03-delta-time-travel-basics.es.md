@@ -1,5 +1,5 @@
 ---
-title: "Delta Time Travel: consulta el pasado con confianza"
+title: "Consultar versiones pasadas en Delta"
 summary: "Consulta versiones anteriores con Time Travel y recupera datos con confianza."
 description: "Aprende `versionAsOf` y `timestampAsOf`, valida cambios y entiende cuándo usar time travel para auditoría, recovery y análisis de regresiones en Delta Lake."
 date: 2026-02-01
