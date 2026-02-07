@@ -3,6 +3,7 @@ title: "PySpark basics for everyday work"
 summary: "Select, filter, and aggregates: the three daily moves in PySpark."
 description: "Practical guide with clear examples and expected outputs to master core DataFrame transformations. Includes readable chaining patterns and quick validations."
 date: 2026-02-01
+draft: true
 tags: ["spark", "databricks", "infra", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "11 min"

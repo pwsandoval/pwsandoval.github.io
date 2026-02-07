@@ -3,6 +3,7 @@ title: "Qué guarda Delta en disco"
 summary: "Qué archivos se crean en Delta (Parquet + _delta_log) y cómo inspeccionarlos."
 description: "Explora el layout en disco, commits y checkpoints, y entiende por qué esto importa para performance, mantenimiento y troubleshooting en producción."
 date: 2026-02-01
+draft: true
 tags: ["delta", "spark", "infra", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "10 min"
@@ -12,12 +13,12 @@ series_index: 4
 notebook_ipynb: "/notebooks/spark-101/04-delta-storage-layout-basics.ipynb"
 notebook_py: "/notebooks/spark-101/04-delta-storage-layout-basics.py"
 cover:
-  image: "/images/posts/delta-storage-layout-basics-nord.png"
+  image: "/images/posts/delta-storage-layout-basics.webp"
   alt: "Delta storage layout: qué hay realmente en disco"
   relative: false
   hidden: false
 images:
-  - "/images/posts/delta-storage-layout-basics-nord.png"
+  - "/images/posts/delta-storage-layout-basics.webp"
 ---
 
 {{< series_nav >}}

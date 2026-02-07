@@ -1,113 +1,116 @@
 ---
-title: "Build a Spark streaming Data Source"
-summary: "Build a custom Spark streaming source backed by an external API."
-description: "Implement a minimal Data Source API reader with real offsets, a clear schema, and a usable format. You will compare the naive batch approach vs real streaming and run it end-to-end."
+title: "Spark Data Source API, step by step (CoinGecko)"
+summary: "Build a streaming source in Spark from a public API."
+description: 'Step‑by‑step guide: from a batch approach to a real streaming Data Source in PySpark 3.5.1. Defines schema, offsets, reader, and provider registration to use format("coingecko").'
 date: 2026-02-01
+draft: true
 tags: ["spark", "streaming", "optimizacion", "testing", "databricks"]
 difficulty: "basico"
-reading_time: "12 min"
+reading_time: "14 min"
 slug: "spark-data-source-api-streaming"
 notebook_ipynb: "/notebooks/spark/01-spark-data-source-api-streaming.ipynb"
 notebook_py: "/notebooks/spark/01-spark-data-source-api-streaming.py"
 ---
 
-This post shows **how to build a real streaming Data Source in PySpark**. We start with the naive batch pattern, then implement a reader with `SimpleDataSourceStreamReader` from the official [Data Source API](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.datasource.SimpleDataSourceStreamReader.html).
+This post is a **step‑by‑step, notebook‑friendly** guide to building a Spark streaming source using the Data Source API in **PySpark 3.5.1**. We will read a public API (CoinGecko) and expose it as `format("coingecko")`.
 
 Downloads at the end: [go to Downloads](#downloads).
 
-## At a glance
-- External APIs are not Spark sources by default.
-- The Data Source API lets you define offsets and read streaming rows.
-- Result: `spark.readStream.format("weather").load()`.
-
-## Run it yourself
-Use the [Apache Spark tool](/tools/apache-spark/) from this blog. No venv required.
-
-## 1) The naive batch pattern
-It works, but it is not streaming. You are just rewriting a file and re-reading it:
+## What you will build
+By the end, this works inside a notebook:
 
 ```python
-import json, requests
-
-url = "https://api.open-meteo.com/v1/forecast?latitude=40.71&longitude=-74.01&current=temperature_2m,relative_humidity_2m"
-payload = requests.get(url).json()
-
-with open("/home/jovyan/work/data/weather_stream/batch.json", "w") as f:
-    f.write(json.dumps(payload))
+(df = spark.readStream
+       .format("coingecko")
+       .option("coins", "bitcoin,ethereum")
+       .load())
 ```
 
-## 2) The correct approach: a streaming Data Source
-A streaming reader must define a schema and an offset model. That is what the Data Source API expects.
+## Step 0 — Why not just use requests in a loop?
+You *can* poll an API and write files, but that is not a streaming source. Spark expects a reader that knows **schema + offsets**. The Data Source API gives you that.
 
-### 2.1 Output schema
-Define the schema explicitly (see the [DataFrame schema docs](https://spark.apache.org/docs/latest/sql-ref-datatype-schema.html)) so Spark can plan the stream:
+## Step 1 — Define the output schema
+We declare the structure once so Spark can plan the stream.
 
 ```python
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType, LongType
 
 schema = StructType([
-    StructField("station", StringType(), True),
-    StructField("temperature_2m", DoubleType(), True),
-    StructField("relative_humidity_2m", DoubleType(), True),
+    StructField("coin", StringType(), True),
+    StructField("usd_price", DoubleType(), True),
     StructField("ts_ingest", LongType(), True),
 ])
 ```
 
-### 2.2 Streaming reader (functional skeleton)
-Offsets are the key: `initialOffset` and `latestOffset` define the range, and `read` returns rows between them.
+## Step 2 — Implement the streaming reader
+A streaming reader needs 3 methods:
+- `initialOffset()` — where the stream starts
+- `latestOffset()` — the newest offset available
+- `read(start, end)` — return rows between offsets
 
 ```python
-import ast
-import requests
-import json
 import time
+import requests
 from pyspark.sql.datasource import SimpleDataSourceStreamReader
 
-class WeatherSimpleStreamReader(SimpleDataSourceStreamReader):
+class CoinGeckoStreamReader(SimpleDataSourceStreamReader):
     def __init__(self, options):
         self.options = options
-        self.stations = ast.literal_eval(options.get("stations", "[]"))
+        self.coins = options.get("coins", "bitcoin").split(",")
 
     def initialOffset(self):
         now = int(time.time())
-        return {s: now for s in self.stations}
+        return {c: now for c in self.coins}
 
     def latestOffset(self):
         now = int(time.time())
-        return {s: now for s in self.stations}
+        return {c: now for c in self.coins}
 
     def read(self, start, end):
+        coins_csv = ",".join(self.coins)
+        url = (
+            "https://api.coingecko.com/api/v3/simple/price"
+            f"?ids={coins_csv}&vs_currencies=usd"
+        )
+        payload = requests.get(url, timeout=10).json()
+        now = int(time.time())
         rows = []
-        for station in self.stations:
-            url = (
-                "https://api.open-meteo.com/v1/forecast"
-                f"?latitude={station['lat']}&longitude={station['lon']}"
-                "&current=temperature_2m,relative_humidity_2m"
-            )
-            payload = requests.get(url).json()
-            rows.append({
-                "station": station["id"],
-                "temperature_2m": payload["current"]["temperature_2m"],
-                "relative_humidity_2m": payload["current"]["relative_humidity_2m"],
-                "ts_ingest": int(time.time()),
-            })
+        for coin in self.coins:
+            price = payload.get(coin, {}).get("usd")
+            rows.append({"coin": coin, "usd_price": float(price), "ts_ingest": now})
         return rows
 ```
 
-### 2.3 Register the Data Source (main idea)
-You want this usage:
+## Step 3 — Register the provider (PySpark 3.5.1)
+In a notebook, you must register the provider **before** `format("coingecko")` works.
+
+```python
+from pyspark.sql.datasource import DataSource
+
+class CoinGeckoDataSource(DataSource):
+    name = "coingecko"
+
+    def schema(self):
+        return schema
+
+    def reader(self, schema):
+        return CoinGeckoStreamReader(self.options)
+
+spark.dataSource.register(CoinGeckoDataSource)
+```
+
+## Step 4 — Read as a stream
+Now it behaves like any Spark source.
 
 ```python
 df = (spark.readStream
-      .format("weather")
-      .option("stations", "[{'id':'NYC','lat':40.71,'lon':-74.01}]")
+      .format("coingecko")
+      .option("coins", "bitcoin,ethereum")
       .load())
 ```
 
-For this to work, the reader must be on the classpath and registered as a provider named `weather`. The Data Source API in Spark 3.5+ is still marked experimental, so validate your version in the [official docs](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.datasource.DataSource.html).
-
-## 3) Run the stream
-A minimal run to validate the pipeline:
+## Step 5 — Validate the stream
+Console output is enough to verify it works.
 
 ```python
 (df.writeStream
@@ -119,13 +122,19 @@ A minimal run to validate the pipeline:
 Expected output (example):
 
 ```text
-+-------+---------------+---------------------+----------+
-|station|temperature_2m |relative_humidity_2m |ts_ingest |
-+-------+---------------+---------------------+----------+
-|NYC    | 4.2           | 71.0                |1707070000|
-+-------+---------------+---------------------+----------+
++--------+---------+----------+
+|coin    |usd_price|ts_ingest |
++--------+---------+----------+
+|bitcoin | 43125.0 |1707070000|
+|ethereum| 2310.2  |1707070000|
++--------+---------+----------+
 ```
 
+## Notes you should keep in mind
+- CoinGecko is public and rate‑limited. Don’t call it too frequently.
+- The Data Source API is still marked **experimental** in Spark 3.5.x.
+- If you see signature differences, check the [official DataSource docs](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.datasource.DataSource.html).
+
 ## Downloads
-- Notebook (.ipynb): [Download](/notebooks/spark-101/06-spark-data-source-api-streaming.ipynb)
-- Script (.py): [Download](/notebooks/spark-101/06-spark-data-source-api-streaming.py)
+- Notebook (.ipynb): [Download](/notebooks/spark/01-spark-data-source-api-streaming.ipynb)
+- Script (.py): [Download](/notebooks/spark/01-spark-data-source-api-streaming.py)

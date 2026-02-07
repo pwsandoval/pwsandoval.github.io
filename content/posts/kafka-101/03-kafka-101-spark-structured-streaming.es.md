@@ -1,8 +1,9 @@
 ---
 title: "Leer Kafka con Spark Streaming"
 summary: "Lee un tópico con Spark Structured Streaming y valida la salida en consola."
-description: "Conecta Kafka local con Spark Structured Streaming, define un esquema y ejecuta una lectura continua. Verás métricas simples y validaciones para confirmar que el stream funciona."
+description: "Connect local Kafka to Spark Structured Streaming, define a schema, and run a continuous read. Includes simple metrics and validations to confirm the stream is working."
 date: 2026-02-01
+draft: true
 tags: ["kafka", "spark", "streaming", "infra", "testing"]
 difficulty: "basico"
 reading_time: "11 min"

@@ -3,6 +3,7 @@ title: "Un DataFrame de pandas se modifica dentro de una función"
 summary: "Un DataFrame puede cambiar dentro de una función aunque no lo retornes."
 description: "Aprende por qué los DataFrames de pandas son mutables, cómo las operaciones in‑place filtran cambios y cómo dejar la intención explícita. Incluye repro ejecutable, salida esperada y patrones seguros."
 date: 2026-02-04
+draft: true
 tags: ["testing", "optimizacion", "certificacion", "infra", "spark"]
 difficulty: "basico"
 reading_time: "9 min"

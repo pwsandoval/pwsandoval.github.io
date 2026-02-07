@@ -3,6 +3,7 @@ title: "Pandas DataFrames mutate inside functions"
 summary: "A DataFrame can change inside a function even if you don’t return it."
 description: "See why pandas DataFrames are mutable, how in-place ops leak changes across function boundaries, and how to make intent explicit. Includes a runnable repro, expected output, and safer patterns."
 date: 2026-02-04
+draft: true
 tags: ["testing", "optimizacion", "certificacion", "infra", "spark"]
 difficulty: "basico"
 reading_time: "9 min"

@@ -1,8 +1,9 @@
 ---
-title: "Spark local, primer arranque"
-summary: "Arranca Spark local con Docker, valida el entorno y ejecuta un primer job de verificación."
-description: "Guía práctica para levantar el stack local, comprobar UI/health y correr un primer job. Incluye checks mínimos para confirmar Spark Master/Workers y que tu entorno quede listo para los posts."
+title: "Spark local, first run"
+summary: "Start Spark locally with Docker, validate the setup, and run a first verification job."
+description: "Hands‑on guide to bring up the local stack, check UI/health, and run a first job. Includes minimal checks to confirm Master/Workers are healthy and ready for the rest of the series."
 date: 2026-02-01
+draft: true
 tags: ["spark", "infra", "testing", "databricks", "certificacion"]
 difficulty: "basico"
 reading_time: "8 min"

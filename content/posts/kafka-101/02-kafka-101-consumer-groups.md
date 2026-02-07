@@ -3,6 +3,7 @@ title: "Kafka consumer groups, explained"
 summary: "Understand how consumer groups and partitions split work."
 description: "Explains offsets, partitions, and rebalances with a runnable example that shows how consumption is split across consumers and what happens when scaling or failures occur."
 date: 2026-02-01
+draft: true
 tags: ["kafka", "infra", "streaming", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "10 min"

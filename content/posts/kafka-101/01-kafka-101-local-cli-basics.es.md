@@ -1,8 +1,9 @@
 ---
 title: "Kafka local con CLI, primer recorrido"
 summary: "Crea un tópico local, produce y consume mensajes y entiende el flujo básico."
-description: "Primeros pasos con Kafka CLI: crear tópicos, producir eventos y consumirlos desde consola en un entorno local reproducible. Ideal para practicar sin cloud ni dependencias externas."
+description: "Kafka CLI first steps: create topics, produce events, and consume them from console in a reproducible local environment. Perfect for practice without cloud dependencies."
 date: 2026-02-01
+draft: true
 tags: ["kafka", "infra", "streaming", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "9 min"
