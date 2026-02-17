@@ -24,38 +24,69 @@ Si quieres saltar directo a la descarga, ve a [Descargar stack](#descarga).
 
 ```text
 sql-server/
-└─ docker/
-   ├─ Dockerfile
-   ├─ mssql.env
-   ├─ sample-data/
-   │  └─ room-climate.csv
-   ├─ scripts/
-   │  ├─ db.sql
-   │  └─ tb.sql
-   └─ setup/
-      ├─ entrypoint.sh
-      └─ configure-db.sh
+├─ docker-compose.yml
+├─ Dockerfile
+├─ mssql.env
+├─ sample-data/
+│  └─ room-climate.csv
+├─ scripts/
+│  ├─ db.sql
+│  └─ tb.sql
+└─ setup/
+   ├─ entrypoint.sh
+   └─ configure-db.sh
 ```
 
 Qué contiene cada archivo:
-- `docker/Dockerfile`: crea la imagen final que usarás en `docker build`.
-- `docker/mssql.env`: define variables obligatorias para iniciar SQL Server.
-- `docker/setup/entrypoint.sh`: script principal de arranque del contenedor.
-- `docker/setup/configure-db.sh`: espera a que SQL Server esté listo y luego ejecuta SQL.
-- `docker/scripts/db.sql`: crea la base `demo`.
-- `docker/scripts/tb.sql`: crea la tabla `sensor` y carga datos.
-- `docker/sample-data/room-climate.csv`: dataset de ejemplo.
+- `Dockerfile`: crea la imagen que usará Docker Compose para levantar el servicio.
+- `docker-compose.yml`: define el servicio, puertos, variables y healthcheck.
+- `mssql.env`: define variables obligatorias para iniciar SQL Server.
+- `setup/entrypoint.sh`: script principal de arranque del contenedor.
+- `setup/configure-db.sh`: espera a que SQL Server esté listo y luego ejecuta SQL.
+- `scripts/db.sql`: crea la base `demo`.
+- `scripts/tb.sql`: crea la tabla `sensor` y carga datos.
+- `sample-data/room-climate.csv`: dataset de ejemplo.
 
 ## Flujo completo de arranque
 
-1. Docker construye una imagen desde `Dockerfile`.
-2. Al iniciar el contenedor, se ejecuta `entrypoint.sh`.
-3. `entrypoint.sh` lanza `configure-db.sh` en segundo plano y luego arranca SQL Server.
-4. `configure-db.sh` espera a que el motor responda.
-5. Cuando el motor está listo, ejecuta `db.sql` y después `tb.sql`.
-6. Resultado final: base y tabla creadas, datos cargados.
+1. Docker Compose usa `docker-compose.yml` para levantar el servicio.
+2. Durante el arranque, Compose construye la imagen con `Dockerfile`.
+3. Al iniciar el contenedor, se ejecuta `entrypoint.sh`.
+4. `entrypoint.sh` lanza `configure-db.sh` en segundo plano y luego arranca SQL Server.
+5. `configure-db.sh` espera a que el motor responda.
+6. Cuando el motor está listo, ejecuta `db.sql` y después `tb.sql`.
+7. Resultado final: base y tabla creadas, datos cargados.
 
-## Archivo 1: Dockerfile (construcción de imagen)
+## Archivo 1: docker-compose.yml (servicio y arranque)
+
+`docker-compose.yml`:
+
+```yaml
+services:
+  sql-server:
+    container_name: pw0-sql-server
+    build:
+      context: .
+    ports:
+      - "1433:1433"
+    env_file:
+      - ./mssql.env
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 6
+      start_period: 10s
+```
+
+Lo mínimo importante aquí:
+1. `container_name`: branding del contenedor (`pw0-sql-server`).
+2. `build.context: .`: usa el `Dockerfile` de esta carpeta.
+3. `ports`: publica SQL Server en `localhost:1433`.
+4. `env_file`: carga variables desde `mssql.env`.
+5. `healthcheck`: permite validar que el motor responde.
+
+## Archivo 2: Dockerfile (construcción de imagen)
 
 ```dockerfile
 FROM mcr.microsoft.com/mssql/server:2017-CU31-GDR2-ubuntu-18.04
@@ -71,15 +102,15 @@ Lectura rápida por líneas (en orden de ejecución):
 1. `FROM ...`: toma una imagen base que ya trae SQL Server instalado.
 2. `RUN mkdir -p /usr/config`: crea carpeta donde vivirán scripts y datos.
 3. `WORKDIR /usr/config`: fija esa carpeta como directorio de trabajo.
-4. `COPY . /usr/config`: copia todo el contenido de `docker/` dentro del contenedor.
+4. `COPY . /usr/config`: copia todo el contenido del proyecto dentro del contenedor.
 5. `RUN chmod +x ...`: da permisos de ejecución a los scripts `.sh`.
 6. `ENTRYPOINT [...]`: define qué comando correr al iniciar el contenedor.
 
-## Archivo 2: mssql.env (variables de entorno)
+## Archivo 3: mssql.env (variables de entorno)
 
 ```env
 ACCEPT_EULA="Y"
-MSSQL_SA_PASSWORD="SqlServerP4ss!"
+MSSQL_SA_PASSWORD="pw0SQLpas$"
 MSSQL_PID="Developer"
 ```
 
@@ -88,7 +119,7 @@ Para qué sirve cada variable:
 2. `MSSQL_SA_PASSWORD="..."`: define la clave del usuario administrador `sa`.
 3. `MSSQL_PID="Developer"`: selecciona la edición Developer.
 
-## Archivo 3: entrypoint.sh (orquestación de inicio)
+## Archivo 4: entrypoint.sh (orquestación de inicio)
 
 ```bash
 #!/bin/bash
@@ -101,7 +132,7 @@ Por qué está así:
 2. `sqlservr`: arranca el proceso principal del contenedor.
 3. El `&` permite que ambos procesos convivan: uno espera y prepara; el otro sirve la base.
 
-## Archivo 4: configure-db.sh (espera + ejecución SQL)
+## Archivo 5: configure-db.sh (espera + ejecución SQL)
 
 ```bash
 #!/bin/bash
@@ -123,8 +154,8 @@ fi
 
 echo "SQL Server took $i seconds to start up"
 
-/opt/mssql-tools/bin/sqlcmd -S sql-server -U sa -P $MSSQL_SA_PASSWORD -i /usr/config/scripts/db.sql &&
-/opt/mssql-tools/bin/sqlcmd -S sql-server -U sa -P $MSSQL_SA_PASSWORD -i /usr/config/scripts/tb.sql
+/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -i /usr/config/scripts/db.sql &&
+/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -i /usr/config/scripts/tb.sql
 ```
 
 Aquí ocurre la parte clave del arranque:
@@ -133,7 +164,7 @@ Aquí ocurre la parte clave del arranque:
 3. Usa `&&` para garantizar orden seguro: `tb.sql` solo corre si `db.sql` fue exitoso.
 4. Si algo falla en creación de base, evita que la carga de datos se ejecute en un estado inválido.
 
-## Archivo 5: db.sql (creación de base)
+## Archivo 6: db.sql (creación de base)
 
 ```sql
 USE master
@@ -156,7 +187,7 @@ Con este script:
 2. Verifica existencia de `demo`.
 3. Crea la base solo si no existe, para que el script sea reutilizable.
 
-## Archivo 6: tb.sql (tabla + carga inicial)
+## Archivo 7: tb.sql (tabla + carga inicial)
 
 ```sql
 USE demo
@@ -200,18 +231,17 @@ Con este script:
 2. Crea `sensor` solo si no existe.
 3. Si no hay filas, carga datos del CSV para dejar un entorno funcional desde el primer arranque.
 
-## Ejecutar el stack
+## Iniciar el stack (paso a paso o zip)
 
-Desde la carpeta que contiene `docker/`:
+Desde la carpeta donde está `docker-compose.yml`:
 
 ```bash
-docker build -t sql-server-local ./docker
-docker run -d --name sql-server -p 1433:1433 --env-file ./docker/mssql.env sql-server-local
+docker compose up -d
 ```
 
-Qué hace cada comando:
-1. `docker build ...`: crea la imagen con tus scripts y datos.
-2. `docker run ...`: levanta el contenedor, expone puerto `1433` y carga variables de `mssql.env`.
+Este comando aplica en ambos casos:
+1. Si seguiste el paso a paso y creaste los archivos manualmente.
+2. Si descargaste el `.zip` y levantaste el proyecto desde ahí.
 
 ## Cómo cargar tus propios datos
 
@@ -221,7 +251,7 @@ Formatos recomendados en este setup:
 3. `Excel (.xlsx)`: primero exportar a CSV.
 
 ### Qué debes cambiar
-1. Copia tu archivo a `docker/sample-data/` (por ejemplo `mis-datos.csv`).
+1. Copia tu archivo a `sample-data/` (por ejemplo `mis-datos.csv`).
 2. Ajusta la tabla en `scripts/tb.sql` para que columnas y tipos coincidan.
 3. Cambia la ruta del `BULK INSERT`:
 
@@ -248,7 +278,7 @@ WITH (
 ### Paso 1: entrar a `sqlcmd`
 
 ```bash
-docker exec -it sql-server /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "SqlServerP4ss!"
+docker compose exec sql-server /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "pw0SQLpas$"
 ```
 
 Esto abre el cliente SQL dentro del contenedor para ejecutar consultas manualmente.
@@ -313,15 +343,19 @@ created_at               temperature  humidity  pressure  lux
 ...
 ```
 
-## Limpieza
+## Detener y eliminar el stack
+
+Cuando termines:
 
 ```bash
-docker rm -f sql-server
+docker compose down
 ```
+
+Esto detiene y elimina los contenedores del stack.
 
 ---
 
 ## Descarga {#descarga}
-Si no quieres copiar archivos manualmente, descarga el stack completo:
+Si no quieres copiar archivos manualmente, descarga el stack completo (opcional):
 
 {{< tool_download_button href="/downloads/sql-server-docker-stack.zip" >}}
