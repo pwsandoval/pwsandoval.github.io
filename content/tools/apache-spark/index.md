@@ -267,6 +267,4 @@ networks:
 ## Download {#download}
 If you do not want to copy files manually, download the full stack:
 
-<div class="notebook-buttons">
-  <a class="notebook-btn" href="/downloads/spark-docker-stack.zip">Download the full Spark Docker stack</a>
-</div>
+{{< tool_download_button href="/downloads/spark-docker-stack.zip" >}}

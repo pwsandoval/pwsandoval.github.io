@@ -1,0 +1,12 @@
+{{- $href := .Get "href" -}}
+{{- if $href -}}
+<div class="notebook-buttons">
+  <a class="notebook-btn" href="{{ $href }}">
+    {{- if eq .Page.Language.Lang "es" -}}
+      Descargar archivos del tool (.zip)
+    {{- else -}}
+      Download tool files (.zip)
+    {{- end -}}
+  </a>
+</div>
+{{- end -}}

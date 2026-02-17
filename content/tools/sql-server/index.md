@@ -305,6 +305,4 @@ docker rm -f sql-server
 ## Download {#download}
 If you do not want to copy files manually, download the full stack:
 
-<div class="notebook-buttons">
-  <a class="notebook-btn" href="/downloads/sql-server-docker-stack.zip">Download full SQL Server stack (Docker)</a>
-</div>
+{{< tool_download_button href="/downloads/sql-server-docker-stack.zip" >}}

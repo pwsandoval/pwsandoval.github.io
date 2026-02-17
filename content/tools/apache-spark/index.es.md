@@ -265,6 +265,4 @@ networks:
 ## Descarga {#descarga}
 Si no quieres copiar archivos manualmente, descarga el stack completo:
 
-<div class="notebook-buttons">
-  <a class="notebook-btn" href="/downloads/spark-docker-stack.zip">Descargar stack completo de Spark (Docker)</a>
-</div>
+{{< tool_download_button href="/downloads/spark-docker-stack.zip" >}}
