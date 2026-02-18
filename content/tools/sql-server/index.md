@@ -14,7 +14,7 @@ In this guide, you will run **SQL Server on Docker** and leave it ready for exer
 
 At the end you will have:
 - SQL Server listening on `localhost:1433`.
-- A `demo` database.
+- A `pw0` database.
 - A `sensor` table.
 - Sample records loaded from a file.
 
@@ -30,8 +30,8 @@ sql-server/
 ├─ sample-data/
 │  └─ room-climate.csv
 ├─ scripts/
-│  ├─ db.sql
-│  └─ tb.sql
+│  ├─ database.sql
+│  └─ table.sql
 └─ setup/
    ├─ entrypoint.sh
    └─ configure-db.sh
@@ -43,8 +43,8 @@ What each file is for:
 - `mssql.env`: required environment variables for SQL Server startup.
 - `setup/entrypoint.sh`: main container startup script.
 - `setup/configure-db.sh`: waits for SQL Server and then runs SQL scripts.
-- `scripts/db.sql`: creates the `demo` database.
-- `scripts/tb.sql`: creates the `sensor` table and loads data.
+- `scripts/database.sql`: creates the `pw0` database.
+- `scripts/table.sql`: creates the `sensor` table and loads data.
 - `sample-data/room-climate.csv`: sample dataset.
 
 ## Full startup flow
@@ -54,7 +54,7 @@ What each file is for:
 3. When the container starts, `entrypoint.sh` runs.
 4. `entrypoint.sh` launches `configure-db.sh` in background, then starts SQL Server.
 5. `configure-db.sh` waits until the engine is ready.
-6. Once ready, it runs `db.sql` and then `tb.sql`.
+6. Once ready, it runs `database.sql` and then `table.sql`.
 7. Final result: database and table created, data loaded.
 
 ## File 1: docker-compose.yml (service and startup)
@@ -71,6 +71,7 @@ services:
       - "1433:1433"
     env_file:
       - ./mssql.env
+    restart: always
     healthcheck:
       test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1" || exit 1
       interval: 10s
@@ -154,17 +155,17 @@ fi
 
 echo "SQL Server took $i seconds to start up"
 
-/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -i /usr/config/scripts/db.sql &&
-/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -i /usr/config/scripts/tb.sql
+/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -i /usr/config/scripts/database.sql &&
+/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -i /usr/config/scripts/table.sql
 ```
 
 This is the key startup step:
 1. Waits up to 60 seconds for SQL Server readiness.
-2. Runs `db.sql` first (database must exist before table creation).
-3. Uses `&&` so `tb.sql` only runs if `db.sql` succeeds.
+2. Runs `database.sql` first (database must exist before table creation).
+3. Uses `&&` so `table.sql` only runs if `database.sql` succeeds.
 4. Prevents partial initialization on failures.
 
-## File 6: db.sql (database creation)
+## File 6: database.sql (database creation)
 
 ```sql
 USE master
@@ -173,24 +174,24 @@ GO
 IF NOT EXISTS (
     SELECT name
     FROM sys.databases
-    WHERE name = 'demo'
+    WHERE name = 'pw0'
 )
-CREATE DATABASE demo
+CREATE DATABASE pw0
 GO
 
-PRINT 'DB demo creada (o ya existia)'
+PRINT 'DB pw0 created or already exists'
 GO
 ```
 
 This script:
 1. Runs from `master`.
-2. Checks whether `demo` already exists.
-3. Creates `demo` only when missing.
+2. Checks whether `pw0` already exists.
+3. Creates `pw0` only when missing.
 
-## File 7: tb.sql (table + initial load)
+## File 7: table.sql (table + initial load)
 
 ```sql
-USE demo
+USE pw0
 GO
 
 IF NOT EXISTS (
@@ -222,12 +223,12 @@ WITH (
 )
 GO
 
-PRINT 'Tabla sensor creada y datos cargados (si estaba vacia)'
+PRINT 'TB created and populated with dummy records'
 GO
 ```
 
 This script:
-1. Selects `demo`.
+1. Selects `pw0`.
 2. Creates `sensor` only if missing.
 3. Loads CSV rows when the table is empty.
 
@@ -252,7 +253,7 @@ Recommended formats in this setup:
 
 ### What to change
 1. Put your file in `sample-data/` (for example `my-data.csv`).
-2. Update `CREATE TABLE` columns and types in `scripts/tb.sql`.
+2. Update `CREATE TABLE` columns and types in `scripts/table.sql`.
 3. Update the `BULK INSERT` file path:
 
 ```sql
@@ -286,7 +287,7 @@ docker compose exec sql-server /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P
 ```sql
 SELECT name
 FROM sys.databases
-WHERE name = 'demo';
+WHERE name = 'pw0';
 GO
 ```
 
@@ -295,13 +296,13 @@ Expected output (example):
 ```text
 name
 ----
-demo
+pw0
 ```
 
 ### Step 3: check loaded row count
 
 ```sql
-USE demo;
+USE pw0;
 GO
 SELECT COUNT(*) AS total_rows FROM sensor;
 GO
@@ -318,7 +319,7 @@ total_rows
 ### Step 4: check sample rows
 
 ```sql
-USE demo;
+USE pw0;
 GO
 SELECT TOP 5 * FROM sensor ORDER BY created_at DESC;
 GO

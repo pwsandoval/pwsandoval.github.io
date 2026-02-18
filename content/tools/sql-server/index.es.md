@@ -14,7 +14,7 @@ En esta guía vas a levantar **SQL Server en Docker** y dejarlo listo para usar 
 
 Al final tendrás:
 - SQL Server escuchando en `localhost:1433`.
-- Una base `demo`.
+- Una base `pw0`.
 - Una tabla `sensor`.
 - Registros de ejemplo cargados desde archivo.
 
@@ -30,8 +30,8 @@ sql-server/
 ├─ sample-data/
 │  └─ room-climate.csv
 ├─ scripts/
-│  ├─ db.sql
-│  └─ tb.sql
+│  ├─ database.sql
+│  └─ table.sql
 └─ setup/
    ├─ entrypoint.sh
    └─ configure-db.sh
@@ -43,8 +43,8 @@ Qué contiene cada archivo:
 - `mssql.env`: define variables obligatorias para iniciar SQL Server.
 - `setup/entrypoint.sh`: script principal de arranque del contenedor.
 - `setup/configure-db.sh`: espera a que SQL Server esté listo y luego ejecuta SQL.
-- `scripts/db.sql`: crea la base `demo`.
-- `scripts/tb.sql`: crea la tabla `sensor` y carga datos.
+- `scripts/database.sql`: crea la base `pw0`.
+- `scripts/table.sql`: crea la tabla `sensor` y carga datos.
 - `sample-data/room-climate.csv`: dataset de ejemplo.
 
 ## Flujo completo de arranque
@@ -54,7 +54,7 @@ Qué contiene cada archivo:
 3. Al iniciar el contenedor, se ejecuta `entrypoint.sh`.
 4. `entrypoint.sh` lanza `configure-db.sh` en segundo plano y luego arranca SQL Server.
 5. `configure-db.sh` espera a que el motor responda.
-6. Cuando el motor está listo, ejecuta `db.sql` y después `tb.sql`.
+6. Cuando el motor está listo, ejecuta `database.sql` y después `table.sql`.
 7. Resultado final: base y tabla creadas, datos cargados.
 
 ## Archivo 1: docker-compose.yml (servicio y arranque)
@@ -71,6 +71,7 @@ services:
       - "1433:1433"
     env_file:
       - ./mssql.env
+    restart: always
     healthcheck:
       test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1" || exit 1
       interval: 10s
@@ -154,17 +155,17 @@ fi
 
 echo "SQL Server took $i seconds to start up"
 
-/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -i /usr/config/scripts/db.sql &&
-/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -i /usr/config/scripts/tb.sql
+/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -i /usr/config/scripts/database.sql &&
+/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -i /usr/config/scripts/table.sql
 ```
 
 Aquí ocurre la parte clave del arranque:
 1. Espera hasta 60 segundos a que SQL Server responda.
-2. Ejecuta `db.sql` primero, porque la base debe existir antes de crear tabla.
-3. Usa `&&` para garantizar orden seguro: `tb.sql` solo corre si `db.sql` fue exitoso.
+2. Ejecuta `database.sql` primero, porque la base debe existir antes de crear tabla.
+3. Usa `&&` para garantizar orden seguro: `table.sql` solo corre si `database.sql` fue exitoso.
 4. Si algo falla en creación de base, evita que la carga de datos se ejecute en un estado inválido.
 
-## Archivo 6: db.sql (creación de base)
+## Archivo 6: database.sql (creación de base)
 
 ```sql
 USE master
@@ -173,24 +174,24 @@ GO
 IF NOT EXISTS (
     SELECT name
     FROM sys.databases
-    WHERE name = 'demo'
+    WHERE name = 'pw0'
 )
-CREATE DATABASE demo
+CREATE DATABASE pw0
 GO
 
-PRINT 'DB demo creada (o ya existia)'
+PRINT 'DB pw0 created or already exists'
 GO
 ```
 
 Con este script:
 1. Trabaja desde `master`, que es la base administrativa.
-2. Verifica existencia de `demo`.
+2. Verifica existencia de `pw0`.
 3. Crea la base solo si no existe, para que el script sea reutilizable.
 
-## Archivo 7: tb.sql (tabla + carga inicial)
+## Archivo 7: table.sql (tabla + carga inicial)
 
 ```sql
-USE demo
+USE pw0
 GO
 
 IF NOT EXISTS (
@@ -222,12 +223,12 @@ WITH (
 )
 GO
 
-PRINT 'Tabla sensor creada y datos cargados (si estaba vacia)'
+PRINT 'TB created and populated with dummy records'
 GO
 ```
 
 Con este script:
-1. Selecciona la base `demo`.
+1. Selecciona la base `pw0`.
 2. Crea `sensor` solo si no existe.
 3. Si no hay filas, carga datos del CSV para dejar un entorno funcional desde el primer arranque.
 
@@ -252,7 +253,7 @@ Formatos recomendados en este setup:
 
 ### Qué debes cambiar
 1. Copia tu archivo a `sample-data/` (por ejemplo `mis-datos.csv`).
-2. Ajusta la tabla en `scripts/tb.sql` para que columnas y tipos coincidan.
+2. Ajusta la tabla en `scripts/table.sql` para que columnas y tipos coincidan.
 3. Cambia la ruta del `BULK INSERT`:
 
 ```sql
@@ -288,31 +289,31 @@ Esto abre el cliente SQL dentro del contenedor para ejecutar consultas manualmen
 ```sql
 SELECT name
 FROM sys.databases
-WHERE name = 'demo';
+WHERE name = 'pw0';
 GO
 ```
 
 Qué verifica:
-- Que `db.sql` se ejecutó correctamente.
+- Que `database.sql` se ejecutó correctamente.
 
 Respuesta esperada (ejemplo):
 ```text
 name
 ----
-demo
+pw0
 ```
 
 ### Paso 3: validar tabla y cantidad de filas
 
 ```sql
-USE demo;
+USE pw0;
 GO
 SELECT COUNT(*) AS total_rows FROM sensor;
 GO
 ```
 
 Qué verifica:
-- Que `tb.sql` creó la tabla.
+- Que `table.sql` creó la tabla.
 - Que `BULK INSERT` cargó registros.
 
 Respuesta esperada (ejemplo):
@@ -325,7 +326,7 @@ total_rows
 ### Paso 4: revisar muestra de datos
 
 ```sql
-USE demo;
+USE pw0;
 GO
 SELECT TOP 5 * FROM sensor ORDER BY created_at DESC;
 GO
