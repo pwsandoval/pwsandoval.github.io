@@ -3,7 +3,6 @@ title: "Spark Data Source API, step by step (CoinGecko)"
 summary: "Build a streaming source in Spark from a public API."
 description: 'Step‑by‑step guide: from a batch approach to a real streaming Data Source in PySpark 3.5.1. Defines schema, offsets, reader, and provider registration to use format("coingecko").'
 date: 2026-02-01
-draft: true
 tags: ["spark", "streaming", "optimizacion", "testing", "databricks"]
 difficulty: "basico"
 reading_time: "14 min"
