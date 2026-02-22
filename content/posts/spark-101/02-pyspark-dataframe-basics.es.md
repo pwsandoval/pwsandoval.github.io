@@ -8,13 +8,13 @@ tags: ["spark", "databricks", "infra", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "11 min"
 slug: "pyspark-dataframe-basics"
-series: ["Spark & Delta 101"]
-series_index: 2
+paths: ["Spark & Delta 101"]
+paths_index: 2
 notebook_ipynb: "/notebooks/spark-101/02-pyspark-dataframe-basics.ipynb"
 notebook_py: "/notebooks/spark-101/02-pyspark-dataframe-basics.py"
 ---
 
-{{< series_nav >}}
+{{< paths_nav >}}
 
 Si eres nuevo en Spark, empieza con estas tres operaciones: select, filter y write. Este post es un tour práctico con un dataset pequeño que puedes correr en cualquier lugar. Referencia: [DataFrame select](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.select.html), [filter](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.filter.html).
 

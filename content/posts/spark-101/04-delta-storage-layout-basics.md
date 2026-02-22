@@ -8,8 +8,8 @@ tags: ["delta", "spark", "infra", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "10 min"
 slug: "delta-storage-layout-basics"
-series: ["Spark & Delta 101"]
-series_index: 4
+paths: ["Spark & Delta 101"]
+paths_index: 4
 notebook_ipynb: "/notebooks/spark-101/04-delta-storage-layout-basics.ipynb"
 notebook_py: "/notebooks/spark-101/04-delta-storage-layout-basics.py"
 cover:
@@ -21,7 +21,7 @@ images:
   - "/images/posts/delta-storage-layout-basics.webp"
 ---
 
-{{< series_nav >}}
+{{< paths_nav >}}
 
 Delta tables are Parquet files plus a transaction log. This post helps you see the folder structure and build intuition about what Delta writes to disk. Ref: [Delta transaction log](https://docs.delta.io/latest/delta-batch.html#delta-transaction-log).
 

@@ -8,13 +8,13 @@ tags: ["kafka", "infra", "streaming", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "9 min"
 slug: "kafka-101-local-cli-basics"
-series: ["Kafka 101"]
-series_index: 1
+paths: ["Kafka 101"]
+paths_index: 1
 notebook_ipynb: "/notebooks/kafka-101/01-kafka-101-local-cli-basics.ipynb"
 notebook_py: "/notebooks/kafka-101/01-kafka-101-local-cli-basics.py"
 ---
 
-{{< series_nav >}}
+{{< paths_nav >}}
 
 Este post te deja corriendo localmente y prueba que Kafka funciona con el ciclo mínimo de CLI: crear tópico, producir y consumir. Ref: [Kafka quickstart](https://kafka.apache.org/quickstart).
 

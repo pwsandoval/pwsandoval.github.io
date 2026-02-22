@@ -8,13 +8,13 @@ tags: ["delta", "spark", "databricks", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "10 min"
 slug: "delta-time-travel-basics"
-series: ["Spark & Delta 101"]
-series_index: 3
+paths: ["Spark & Delta 101"]
+paths_index: 3
 notebook_ipynb: "/notebooks/spark-101/03-delta-time-travel-basics.ipynb"
 notebook_py: "/notebooks/spark-101/03-delta-time-travel-basics.py"
 ---
 
-{{< series_nav >}}
+{{< paths_nav >}}
 
 El “time travel” es una de las funciones más útiles de Delta. Permite consultar versiones anteriores sin backups. Este post muestra un antes/después simple para confiar en la técnica. Ref: [Delta Time Travel](https://docs.delta.io/latest/delta-batch.html#time-travel).
 

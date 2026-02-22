@@ -8,13 +8,13 @@ tags: ["kafka", "infra", "streaming", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "10 min"
 slug: "kafka-101-consumer-groups"
-series: ["Kafka 101"]
-series_index: 2
+paths: ["Kafka 101"]
+paths_index: 2
 notebook_ipynb: "/notebooks/kafka-101/02-kafka-101-consumer-groups.ipynb"
 notebook_py: "/notebooks/kafka-101/02-kafka-101-consumer-groups.py"
 ---
 
-{{< series_nav >}}
+{{< paths_nav >}}
 
 Este post muestra cómo los consumer groups reparten trabajo y cómo se mueven los offsets. Es el modelo mental clave antes de usar Spark Streaming. Ref: [Consumer groups](https://kafka.apache.org/documentation/#intro_consumers).
 

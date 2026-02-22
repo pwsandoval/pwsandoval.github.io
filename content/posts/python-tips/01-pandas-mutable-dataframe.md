@@ -8,13 +8,13 @@ tags: ["testing", "optimizacion", "certificacion", "infra", "spark"]
 difficulty: "basico"
 reading_time: "9 min"
 slug: "pandas-mutable-dataframe"
-series: ["Python Tips"]
-series_index: 1
+paths: ["Python Tips"]
+paths_index: 1
 notebook_ipynb: "/notebooks/python-tips/01-pandas-mutable-dataframe.ipynb"
 notebook_py: "/notebooks/python-tips/01-pandas-mutable-dataframe.py"
 ---
 
-{{< series_nav >}}
+{{< paths_nav >}}
 
 This post covers a common pandas behavior: **DataFrames are mutable**, so a function can modify the caller’s object even if you do not return it. The behavior is documented in the [copy vs view guide](https://pandas.pydata.org/docs/user_guide/indexing.html#returning-a-view-versus-a-copy) and the [DataFrame API](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html).
 

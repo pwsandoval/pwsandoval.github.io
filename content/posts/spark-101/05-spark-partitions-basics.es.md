@@ -8,13 +8,13 @@ tags: ["spark", "optimizacion", "infra", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "10 min"
 slug: "spark-partitions-basics"
-series: ["Spark & Delta 101"]
-series_index: 5
+paths: ["Spark & Delta 101"]
+paths_index: 5
 notebook_ipynb: "/notebooks/spark-101/05-spark-partitions-basics.ipynb"
 notebook_py: "/notebooks/spark-101/05-spark-partitions-basics.py"
 ---
 
-{{< series_nav >}}
+{{< paths_nav >}}
 
 Las particiones son la unidad de paralelismo en Spark. Este post muestra cómo el número de particiones cambia la distribución de tareas y el rendimiento. Ref: [repartition](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.repartition.html), [coalesce](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html).
 

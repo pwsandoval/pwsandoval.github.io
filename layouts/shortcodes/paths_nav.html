@@ -1,0 +1,31 @@
+{{- $pathsList := .Page.Params.paths -}}
+{{- if $pathsList -}}
+  {{- $pathName := index $pathsList 0 -}}
+  {{- $term := urlize $pathName -}}
+  {{- $pages := where site.RegularPages "Params.paths" "intersect" (slice $pathName) -}}
+  {{- $sorted := sort $pages "Params.paths_index" "asc" -}}
+  {{- $current := .Page.RelPermalink -}}
+  {{- $label := cond (eq .Page.Lang "es") "Rutas" "Paths" -}}
+  <div class="paths-nav">
+    <div class="paths-header">
+      <span class="paths-label">{{ $label }}</span>
+      {{- with site.GetPage (printf "/paths/%s" $term) -}}
+        <a class="paths-title" href="{{ .RelPermalink }}">{{ $pathName }}</a>
+      {{- else -}}
+        <span class="paths-title">{{ $pathName }}</span>
+      {{- end -}}
+    </div>
+    {{- if $sorted -}}
+      <div class="paths-list">
+        {{- range $i, $p := $sorted -}}
+          {{- $index :=  $p.Params.paths_index | default (add $i 1) -}}
+          {{- if eq $p.RelPermalink $current -}}
+            <span class="paths-item current"><strong>{{ $index }}/{{ len $sorted }}. {{ $p.Title }}</strong></span>
+          {{- else -}}
+            <a class="paths-item" href="{{ $p.RelPermalink }}">{{ $index }}/{{ len $sorted }}. {{ $p.Title }}</a>
+          {{- end -}}
+        {{- end -}}
+      </div>
+    {{- end -}}
+  </div>
+{{- end -}}

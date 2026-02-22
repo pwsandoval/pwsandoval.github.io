@@ -8,13 +8,13 @@ tags: ["spark", "delta", "databricks", "infra", "testing"]
 difficulty: "basico"
 reading_time: "9 min"
 slug: "delta-table-101-create-read"
-series: ["Spark & Delta 101"]
-series_index: 1
+paths: ["Spark & Delta 101"]
+paths_index: 1
 notebook_ipynb: "/notebooks/spark-101/01-delta-table-101.ipynb"
 notebook_py: "/notebooks/spark-101/01-delta-table-101.py"
 ---
 
-{{< series_nav >}}
+{{< paths_nav >}}
 
 If you are new to Delta Lake, this is the first post to run. It focuses on the minimal actions you do in real work: create a Delta table, read it back, and overwrite it safely. Reference: [Delta Lake](https://docs.delta.io/latest/delta-intro.html).
 

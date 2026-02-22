@@ -8,13 +8,13 @@ tags: ["spark", "delta", "databricks", "infra", "testing"]
 difficulty: "basico"
 reading_time: "9 min"
 slug: "delta-table-101-create-read"
-series: ["Spark & Delta 101"]
-series_index: 1
+paths: ["Spark & Delta 101"]
+paths_index: 1
 notebook_ipynb: "/notebooks/spark-101/01-delta-table-101.ipynb"
 notebook_py: "/notebooks/spark-101/01-delta-table-101.py"
 ---
 
-{{< series_nav >}}
+{{< paths_nav >}}
 
 Si eres nuevo en Delta Lake, este es el primer post que debes ejecutar. Se enfoca en lo mínimo que haces en trabajo real: crear una tabla Delta, leerla y sobrescribirla de forma segura. Referencia oficial: [Delta Lake](https://docs.delta.io/latest/delta-intro.html).
 

@@ -8,13 +8,13 @@ tags: ["kafka", "spark", "streaming", "infra", "testing"]
 difficulty: "basico"
 reading_time: "11 min"
 slug: "kafka-101-spark-structured-streaming"
-series: ["Kafka 101"]
-series_index: 3
+paths: ["Kafka 101"]
+paths_index: 3
 notebook_ipynb: "/notebooks/kafka-101/03-kafka-101-spark-structured-streaming.ipynb"
 notebook_py: "/notebooks/kafka-101/03-kafka-101-spark-structured-streaming.py"
 ---
 
-{{< series_nav >}}
+{{< paths_nav >}}
 
 This post connects Spark Structured Streaming to a local Kafka topic and reads messages in real time. Ref: [Structured Streaming + Kafka](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html).
 

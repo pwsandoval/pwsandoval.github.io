@@ -33,13 +33,13 @@
 <meta property="og:video" content="{{ . | absURL }}" />
 {{ end }}{{ end }}
 
-{{- /* If it is part of a series, link to related articles */}}
+{{- /* If it is part of a path, link to related articles */}}
 {{- $permalink := .Permalink }}
-{{- $siteSeries := site.Taxonomies.series }}
-{{- if $siteSeries }}
-{{ with .Params.series }}{{- range $name := . }}
-  {{- $series := index $siteSeries ($name | urlize) }}
-  {{- range $page := first 6 $series.Pages }}
+{{- $sitePaths := site.Taxonomies.paths }}
+{{- if $sitePaths }}
+{{ with .Params.paths }}{{- range $name := . }}
+  {{- $path := index $sitePaths ($name | urlize) }}
+  {{- range $page := first 6 $path.Pages }}
     {{- if ne $page.Permalink $permalink }}<meta property="og:see_also" content="{{ $page.Permalink }}" />{{ end }}
   {{- end }}
 {{ end }}{{ end }}

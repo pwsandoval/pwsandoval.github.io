@@ -2,6 +2,9 @@ baseURL: https://pw0.dev/
 languageCode: en-us
 title: pw0
 theme: ["PaperMod"]
+services:
+  googleAnalytics:
+    ID: G-PS2FFNRN3Y
 defaultContentLanguage: en
 defaultContentLanguageInSubdir: false
 languages:
@@ -9,10 +12,63 @@ languages:
     languageCode: en
     languageName: "English"
     weight: 1
+    menus:
+      main:
+        - identifier: posts
+          name: "posts"
+          url: "/posts/"
+          weight: 1
+        - identifier: tools
+          name: "tools"
+          url: "/tools/"
+          weight: 2
+        - identifier: tags
+          name: "tags"
+          url: "/tags/"
+          weight: 3
+        - identifier: archives
+          name: "archives"
+          url: "/archives/"
+          weight: 4
+        - identifier: paths
+          name: "paths"
+          url: "/paths/"
+          weight: 5
   es:
     languageCode: es
     languageName: "Español"
     weight: 2
+    params:
+      profileMode:
+        buttons:
+          - name: "Articulos"
+            url: /posts/
+          - name: "Etiquetas"
+            url: /tags/
+          - name: "Archivo"
+            url: /archives/
+    menus:
+      main:
+        - identifier: posts
+          name: "articulos"
+          url: "/posts/"
+          weight: 1
+        - identifier: tools
+          name: "herramientas"
+          url: "/tools/"
+          weight: 2
+        - identifier: tags
+          name: "etiquetas"
+          url: "/tags/"
+          weight: 3
+        - identifier: archives
+          name: "archivo"
+          url: "/archives/"
+          weight: 4
+        - identifier: paths
+          name: "rutas"
+          url: "/paths/"
+          weight: 5
 params:
   env: production
   profileMode:
@@ -59,32 +115,10 @@ markup:
     lineNos: true
     lineNumbersInTable: true
     style: "catppuccin-frappe"
-menu:
-  main:
-    - identifier: posts
-      name: posts
-      url: /posts/
-      weight: 1
-    - identifier: tools
-      name: "tools"
-      url: "/tools/"
-      weight: 2
-    - identifier: tags
-      name: "tags"
-      url: "/tags/"
-      weight: 3
-    - identifier: archives
-      name: "archives"
-      url: "/archives/"
-      weight: 4
-    - identifier: series
-      name: "series"
-      url: "/series/"
-      weight: 5
 taxonomies:
   tag: tags
   category: categories
-  series: series
+  paths: paths
 sitemap:
   changefreq: weekly
   filename: sitemap.xml

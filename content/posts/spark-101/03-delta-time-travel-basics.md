@@ -8,13 +8,13 @@ tags: ["delta", "spark", "databricks", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "10 min"
 slug: "delta-time-travel-basics"
-series: ["Spark & Delta 101"]
-series_index: 3
+paths: ["Spark & Delta 101"]
+paths_index: 3
 notebook_ipynb: "/notebooks/spark-101/03-delta-time-travel-basics.ipynb"
 notebook_py: "/notebooks/spark-101/03-delta-time-travel-basics.py"
 ---
 
-{{< series_nav >}}
+{{< paths_nav >}}
 
 Time travel is one of the most useful Delta features. It lets you query older versions of your table without backups. This post shows a simple before/after so you can trust it in real work. Ref: [Delta Time Travel](https://docs.delta.io/latest/delta-batch.html#time-travel).
 

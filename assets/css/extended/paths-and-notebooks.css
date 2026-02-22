@@ -1,4 +1,4 @@
-.series-nav {
+\.paths-nav {
   margin: 1rem 0 0.8rem;
   padding: 0.9rem 1.1rem;
   border: none;
@@ -9,39 +9,39 @@
   max-width: 100%;
 }
 
-.series-header {
+\.paths-header {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.45rem;
 }
 
-.series-label {
+\.paths-label {
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--secondary);
 }
 
-.series-title {
+\.paths-title {
   font-weight: 600;
   text-decoration: none;
 }
 
-.series-list {
+\.paths-list {
   display: grid;
   gap: 0.4rem;
 }
 
-.series-item {
+\.paths-item {
   text-decoration: none;
 }
 
-.series-item.current {
+\\.paths-item.current {
   color: var(--primary);
 }
 
-.series-nav a {
+\.paths-nav a {
   box-shadow: none !important;
   text-decoration: none;
 }
