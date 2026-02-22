@@ -3,7 +3,6 @@ title: "What Delta stores on disk"
 summary: "What Delta writes on disk (Parquet + _delta_log) and how to inspect it."
 description: "Explore the on‑disk layout, commits, and checkpoints, and see why it matters for performance, maintenance, and troubleshooting in production."
 date: 2026-02-01
-draft: true
 tags: ["delta", "spark", "infra", "testing", "certificacion"]
 difficulty: "basico"
 reading_time: "10 min"

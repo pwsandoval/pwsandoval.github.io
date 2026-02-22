@@ -1,0 +1,182 @@
+name: Generate Post Artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: "What to generate"
+        required: true
+        default: "single"
+        type: choice
+        options:
+          - single
+          - all
+      post_path:
+        description: "Path to a single markdown post (used when scope=single)"
+        required: false
+        default: "content/posts/spark-101/04-delta-storage-layout-basics.md"
+        type: string
+      commit_changes:
+        description: "Commit generated files to current branch"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install converter
+        run: pip install -e tools/pw0-post-converter
+
+      - name: Select posts to process
+        id: select
+        run: |
+          set -euo pipefail
+          mkdir -p .tmp
+
+          if [[ "${{ github.event.inputs.scope }}" == "all" ]]; then
+            find content/posts -type f -name "*.md" ! -name "*.es.md" | sort > .tmp/posts_to_process.txt
+          else
+            printf "%s\n" "${{ github.event.inputs.post_path }}" > .tmp/posts_to_process.txt
+          fi
+
+          total="$(wc -l < .tmp/posts_to_process.txt | tr -d ' ')"
+          echo "total=$total" >> "$GITHUB_OUTPUT"
+          echo "Selected $total post(s)."
+          cat .tmp/posts_to_process.txt
+
+      - name: Generate notebooks and scripts
+        run: |
+          set +e
+          failures=0
+          processed=0
+          skipped=0
+
+          mkdir -p .tmp/converter-input .tmp/converter-output static/notebooks
+          : > .tmp/post-converter.log
+
+          while IFS= read -r post_file; do
+            [[ -z "$post_file" ]] && continue
+
+            if [[ ! -f "$post_file" ]]; then
+              echo "::warning::Post not found: $post_file"
+              failures=$((failures + 1))
+              continue
+            fi
+
+            rm -rf .tmp/converter-input/* .tmp/converter-output/*
+            cp "$post_file" .tmp/converter-input/
+
+            post-converter process \
+              --input-dir .tmp/converter-input \
+              --processed-dir .tmp/converter-output \
+              --log-file .tmp/post-converter.log
+            rc=$?
+            if [[ $rc -ne 0 ]]; then
+              echo "::warning::Converter failed for $post_file"
+              failures=$((failures + 1))
+              continue
+            fi
+
+            python - "$post_file" "$(pwd)" << 'PY'
+import sys
+import shutil
+from pathlib import Path
+import frontmatter
+
+post_file = Path(sys.argv[1])
+repo_root = Path(sys.argv[2])
+processed_dir = repo_root / ".tmp" / "converter-output"
+
+md = frontmatter.load(post_file)
+target_ipynb = md.get("notebook_ipynb")
+target_py = md.get("notebook_py")
+
+if not target_ipynb or not target_py:
+    print(f"SKIP_NO_TARGETS {post_file}")
+    raise SystemExit(10)
+
+generated_ipynb = sorted(processed_dir.rglob("*.ipynb"))
+generated_py = sorted(processed_dir.rglob("*.py"))
+
+if not generated_ipynb or not generated_py:
+    print(f"SKIP_NO_OUTPUT {post_file}")
+    raise SystemExit(11)
+
+dest_ipynb = repo_root / "static" / target_ipynb.lstrip("/")
+dest_py = repo_root / "static" / target_py.lstrip("/")
+dest_ipynb.parent.mkdir(parents=True, exist_ok=True)
+dest_py.parent.mkdir(parents=True, exist_ok=True)
+
+shutil.copy2(generated_ipynb[0], dest_ipynb)
+shutil.copy2(generated_py[0], dest_py)
+print(f"WROTE {dest_ipynb}")
+print(f"WROTE {dest_py}")
+PY
+            py_rc=$?
+            if [[ $py_rc -eq 10 || $py_rc -eq 11 ]]; then
+              skipped=$((skipped + 1))
+              continue
+            fi
+            if [[ $py_rc -ne 0 ]]; then
+              echo "::warning::Mapping failed for $post_file"
+              failures=$((failures + 1))
+              continue
+            fi
+
+            processed=$((processed + 1))
+          done < .tmp/posts_to_process.txt
+
+          echo "Processed: $processed"
+          echo "Skipped: $skipped"
+          echo "Failures: $failures"
+          if [[ $failures -gt 0 ]]; then
+            echo "::warning::$failures post(s) failed. Blog workflow is unaffected."
+          fi
+
+      - name: Upload generated artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-post-artifacts
+          path: static/notebooks
+          if-no-files-found: warn
+
+      - name: Upload conversion log
+        uses: actions/upload-artifact@v4
+        with:
+          name: post-converter-log
+          path: .tmp/post-converter.log
+          if-no-files-found: warn
+
+      - name: Commit generated files
+        if: ${{ github.event.inputs.commit_changes == 'true' }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- static/notebooks; then
+            echo "No changes in static/notebooks"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add static/notebooks
+          git commit -m "chore: regenerate notebooks and scripts"
+          git push
