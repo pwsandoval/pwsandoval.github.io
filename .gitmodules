@@ -1,3 +1,6 @@
 [submodule "themes/PaperMod"]
 	path = themes/PaperMod
 	url = https://github.com/adityatelange/hugo-PaperMod.git
+[submodule "tools/pw0-post-converter"]
+	path = tools/pw0-post-converter
+	url = https://github.com/pwsandoval/pw0-post-converter.git

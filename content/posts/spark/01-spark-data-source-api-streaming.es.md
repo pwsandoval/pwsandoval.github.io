@@ -7,12 +7,14 @@ tags: ["spark", "streaming", "optimizacion", "testing", "databricks"]
 read_time: "24 min"
 slug: "spark-data-source-api-streaming"
 cover:
-  image: "/images/posts/spark-data-source-api-streaming-og.webp"
+  image: "/images/posts/spark-data-source-api-streaming.es.webp"
   alt: "Spark Data Source API streaming con CoinGecko"
   relative: false
   hidden: false
 images:
-  - "/images/posts/spark-data-source-api-streaming-og.webp"
+  - "/images/posts/spark-data-source-api-streaming.es.webp"
+notebook_ipynb: "/notebooks/spark/01-spark-data-source-api-streaming.ipynb"
+notebook_py: "/notebooks/spark/01-spark-data-source-api-streaming.py"
 ---
 
 Este post muestra cómo envolver una API HTTP real (CoinGecko) como un source nativo de Spark Structured Streaming usando la Python Data Source API.

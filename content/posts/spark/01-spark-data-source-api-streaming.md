@@ -7,6 +7,13 @@ tags: ["spark", "streaming", "optimizacion", "testing", "databricks"]
 difficulty: "basico"
 reading_time: "14 min"
 slug: "spark-data-source-api-streaming"
+cover:
+  image: "/images/posts/spark-data-source-api-streaming.webp"
+  alt: "Spark Data Source API streaming con CoinGecko"
+  relative: false
+  hidden: false
+images:
+  - "/images/posts/spark-data-source-api-streaming.webp"
 notebook_ipynb: "/notebooks/spark/01-spark-data-source-api-streaming.ipynb"
 notebook_py: "/notebooks/spark/01-spark-data-source-api-streaming.py"
 ---
