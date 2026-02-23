@@ -97,40 +97,40 @@ jobs:
             fi
 
             python - "$post_file" "$(pwd)" << 'PY'
-import sys
-import shutil
-from pathlib import Path
-import frontmatter
+            import sys
+            import shutil
+            from pathlib import Path
+            import frontmatter
 
-post_file = Path(sys.argv[1])
-repo_root = Path(sys.argv[2])
-processed_dir = repo_root / ".tmp" / "converter-output"
+            post_file = Path(sys.argv[1])
+            repo_root = Path(sys.argv[2])
+            processed_dir = repo_root / ".tmp" / "converter-output"
 
-md = frontmatter.load(post_file)
-target_ipynb = md.get("notebook_ipynb")
-target_py = md.get("notebook_py")
+            md = frontmatter.load(post_file)
+            target_ipynb = md.get("notebook_ipynb")
+            target_py = md.get("notebook_py")
 
-if not target_ipynb or not target_py:
-    print(f"SKIP_NO_TARGETS {post_file}")
-    raise SystemExit(10)
+            if not target_ipynb or not target_py:
+                print(f"SKIP_NO_TARGETS {post_file}")
+                raise SystemExit(10)
 
-generated_ipynb = sorted(processed_dir.rglob("*.ipynb"))
-generated_py = sorted(processed_dir.rglob("*.py"))
+            generated_ipynb = sorted(processed_dir.rglob("*.ipynb"))
+            generated_py = sorted(processed_dir.rglob("*.py"))
 
-if not generated_ipynb or not generated_py:
-    print(f"SKIP_NO_OUTPUT {post_file}")
-    raise SystemExit(11)
+            if not generated_ipynb or not generated_py:
+                print(f"SKIP_NO_OUTPUT {post_file}")
+                raise SystemExit(11)
 
-dest_ipynb = repo_root / "static" / target_ipynb.lstrip("/")
-dest_py = repo_root / "static" / target_py.lstrip("/")
-dest_ipynb.parent.mkdir(parents=True, exist_ok=True)
-dest_py.parent.mkdir(parents=True, exist_ok=True)
+            dest_ipynb = repo_root / "static" / target_ipynb.lstrip("/")
+            dest_py = repo_root / "static" / target_py.lstrip("/")
+            dest_ipynb.parent.mkdir(parents=True, exist_ok=True)
+            dest_py.parent.mkdir(parents=True, exist_ok=True)
 
-shutil.copy2(generated_ipynb[0], dest_ipynb)
-shutil.copy2(generated_py[0], dest_py)
-print(f"WROTE {dest_ipynb}")
-print(f"WROTE {dest_py}")
-PY
+            shutil.copy2(generated_ipynb[0], dest_ipynb)
+            shutil.copy2(generated_py[0], dest_py)
+            print(f"WROTE {dest_ipynb}")
+            print(f"WROTE {dest_py}")
+            PY
             py_rc=$?
             if [[ $py_rc -eq 10 || $py_rc -eq 11 ]]; then
               skipped=$((skipped + 1))
