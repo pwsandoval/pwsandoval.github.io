@@ -6,6 +6,10 @@
   background: var(--code-bg);
 } */
 
+body:not(.list):not(.dark) {
+  background: var(--code-bg);
+}
+
 /* ================================
    Tools grid (2 cards per row)
    ================================ */
