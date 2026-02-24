@@ -111,3 +111,11 @@
   height: auto !important;
   display: inline-block !important;
 }
+
+@media screen and (max-width: 768px) {
+  .post-single .entry-cover img,
+  .post-entry .entry-cover img {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
