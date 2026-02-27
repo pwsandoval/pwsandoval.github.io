@@ -3,7 +3,7 @@ title: "Tu primera tabla Delta, paso a paso"
 summary: "Crea tu primera tabla Delta, escribe y lee con operaciones básicas y verificables."
 description: "Recorrido end‑to‑end: crear tabla Delta, insertar datos, leer, filtrar y validar resultados con salidas esperadas. Base mínima para entender Delta antes de optimizar."
 date: 2026-02-01
-draft: true
+# draft: true
 tags: ["spark", "delta", "databricks", "infra", "testing"]
 difficulty: "basico"
 reading_time: "9 min"
